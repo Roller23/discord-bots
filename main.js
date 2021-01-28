@@ -5,7 +5,6 @@ const fetch = require('node-fetch');
 const client = new Discord.Client();
 const io = require('socket.io-client');
 const https = require('https')
-const fs = require('fs')
 
 const heroku = 'https://pomodoro-salvadoro.herokuapp.com';
 const glitch = 'https://friml-conductor.glitch.me';
@@ -57,3 +56,9 @@ client.on('message', async msg => {
 });
 
 client.login(process.env.SALV_TOKEN);
+
+// launch a http server to satisfy DigitalOcean health checks
+
+https.createServer((req, res) => {
+  res.end();
+}).listen(8080, '0.0.0.0');
