@@ -2,7 +2,8 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
-const client = new Discord.Client();
+const salvador = new Discord.Client();
+const friml = new Discord.Client();
 const io = require('socket.io-client');
 const https = require('https')
 
@@ -11,12 +12,17 @@ const glitch = 'https://friml-conductor.glitch.me';
 
 process.on("unhandledRejection", error => console.error("Promise rejection:", error));
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setActivity('Teach me anime senpai', {type: 'PLAYING'});
+salvador.on('ready', () => {
+  console.log(`Logged in as ${salvador.user.tag}!`);
+  salvador.user.setActivity('Teach me anime senpai', {type: 'PLAYING'});
 });
 
-client.on('message', async msg => {
+friml.on('ready', () => {
+  console.log(`Logged in as ${salvador.user.tag}!`);
+  salvador.user.setActivity('dead since 1972:tm:', {type: 'PLAYING'});
+});
+
+salvador.on('message', async msg => {
   if (msg.content.toLowerCase() === 'gimme image') {
     msg.reply("I'm on it");
     try {
@@ -26,7 +32,9 @@ client.on('message', async msg => {
       msg.reply('Ojoj error D:\n' + e)
     }
   }
+});
 
+friml.on('message', msg => {
   if (msg.content.toLowerCase() === 'gimme song') {
     const socket = io(glitch);
     socket.on('song', data => {
@@ -47,18 +55,16 @@ client.on('message', async msg => {
       avgTime = data.time;
       msg.reply(`you're ${position} in queue!`);
     });
-
-    let data = {genre: 'classical', key: 'C', instrument: 'piano'};
+  
+    const data = {genre: 'classical', key: 'C', instrument: 'piano'};
     socket.emit('song', data);
     msg.reply('lemme call my homie Friml real quick');
   }
+})
 
-});
-
-client.login(process.env.SALV_TOKEN);
+salvador.login(process.env.SALV_TOKEN);
+friml.login(process.env.FRIML_TOKEN);
 
 // launch a http server to satisfy DigitalOcean health checks
 
-https.createServer((req, res) => {
-  res.end();
-}).listen(8080, '0.0.0.0');
+https.createServer((req, res) => res.end()).listen(8080, '0.0.0.0');
