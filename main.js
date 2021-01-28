@@ -18,8 +18,8 @@ salvador.on('ready', () => {
 });
 
 friml.on('ready', () => {
-  console.log(`Logged in as ${salvador.user.tag}!`);
-  salvador.user.setActivity('dead since 1972:tm:', {type: 'PLAYING'});
+  console.log(`Logged in as ${friml.user.tag}!`);
+  friml.user.setActivity('dead since 1972', {type: 'PLAYING'});
 });
 
 salvador.on('message', async msg => {
