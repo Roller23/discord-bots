@@ -4,7 +4,6 @@ const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const client = new Discord.Client();
 const io = require('socket.io-client');
-const waifu2x = require('waifu2x').default;
 const https = require('https')
 const fs = require('fs')
 
@@ -23,23 +22,7 @@ client.on('message', async msg => {
     msg.reply("I'm on it");
     try {
       const id = await (await fetch(`${heroku}/generate`)).text();
-      const fileURL = `${heroku}/generated/${id}/image0000.png`;
-      msg.channel.send('', {files: [fileURL]})
-      const file = fs.createWriteStream("file.png");
-      https.get(fileURL, response => {
-        response.pipe(file);
-        file.on('finish', () => {
-          file.close(async () => {
-            await waifu2x.upscaleImage("file.png", "file2x.png", {
-              noise: 2, scale: 4.0
-            });
-            msg.channel.send('', {
-              files: ["file2x.png"]
-            });
-          });
-        });
-      });
-
+      msg.channel.send('', {files: [`${heroku}/generated/${id}/image0000.png`]})
     } catch (e) {
       msg.reply('Ojoj error D:\n' + e)
     }
