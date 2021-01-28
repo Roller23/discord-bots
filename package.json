@@ -1,0 +1,18 @@
+{
+  "name": "salvador-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1",
+    "socket.io-client": "^3.1.0",
+    "waifu2x": "^0.3.8"
+  }
+}
