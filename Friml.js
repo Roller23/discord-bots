@@ -36,6 +36,10 @@ module.exports = {
         const data = {genre: 'classical', key: 'C', instrument: 'piano'};
         socket.emit('song', data);
         msg.reply('uno momento');
+      } else if (msg.content.toLowerCase() === '@someone') {
+        let online = msg.guild.members.cache.filter(m => m.presence.status !== "offline");
+        if (online.length === 0) return;
+        console.log(online);
       }
     });
     client.login(TOKEN);
