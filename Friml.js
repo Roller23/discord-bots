@@ -37,9 +37,12 @@ module.exports = {
         socket.emit('song', data);
         msg.reply('uno momento');
       } else if (msg.content.toLowerCase() === '@someone') {
-        let online = msg.guild.members.cache.filter(m => m.presence.status !== "offline");
-        if (online.length === 0) return;
-        console.log(online);
+        for (let u in self.users) {
+          let user = self.users[u];
+          if (user instanceof Discord.User) {
+            console.log("["+u+"] " + user.username);
+          }
+        }
       }
     });
     client.login(TOKEN);
