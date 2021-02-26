@@ -48,19 +48,20 @@ module.exports = {
             return msg.reply('What the heck do you want from me zią');
           }
           let event = new Event();
+          event.date = new Date();
           let dateInfo = args[0].split('/');
           let timeInfo = ['0','0'];
           
           // !add x "tresc" - dodaj event za x dni
           if (dateInfo.length == 1) {
             let days = dateInfo[0];
-            event.date.setDate(date.getDate() + days);
+            event.date.setDate(event.date.getDate() + days);
           } 
           // !add d/m "tresc" - dodaj event x dnia y miesiąca
           else {
               let day = dateInfo[0];
               let month = dateInfo[1];
-              date.setFullYear(year, month, day);
+              event.date.setFullYear(year, month, day);
           }
 
           let argOffset = 0;
