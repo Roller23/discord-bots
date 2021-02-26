@@ -183,7 +183,7 @@ module.exports = {
                 msg.reply("Which event you wanna get rid of, oi");
             } else {
                 let index = Number(args[0])
-                if (!isNaN(index) && index > -1) {
+                if (!isNaN(index) && index > -1 && index < this.db.events.length) {
                     this.db.events.splice(index, 1);
                     this.saveDb();
                     msg.reply("Deleted that bad boi");
