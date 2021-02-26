@@ -39,8 +39,8 @@ module.exports = {
               .setURL('https://omfgdogs.com')
               .setDescription(event.desc)
               .setThumbnail('https://media-exp1.licdn.com/dms/image/C4D03AQEg_qDgf_XUow/profile-displayphoto-shrink_200_200/0/1517512903046?e=1616025600&v=beta&t=bAOQwY-9sSOWfxMJtFjQh0-tsRQC-k2sZTFCGPv0qQI')
-              .addField({name: 'Subject', value: event.subject})
-              .addField({name: 'Date', value: event.date.toLocaleString("pl-PL")});
+              .addField('Subject', event.subject)
+              .addField('Date', event.date.toLocaleString("pl-PL"));
   },
   run(tokens) {
     this.loadDb();
@@ -68,12 +68,12 @@ module.exports = {
           let timeInfo = ['0','0'];
           
           if (dateInfo.length == 1) {
-            let days = dateInfo[0];
+            let days = Number(dateInfo[0]);
             event.date.setDate(event.date.getDate() + days);
           } 
           else {
-              let day = dateInfo[0];
-              let month = dateInfo[1];
+              let day = Number(dateInfo[0]);
+              let month = Number(dateInfo[1]) - 1;
               let year = event.date.getFullYear();
               event.date.setFullYear(year, month, day);
           }
@@ -100,6 +100,7 @@ module.exports = {
           msg.channel.send(this.createEventEmbed(event));
           // msg.reply('ar ju siur abot dis?');
           this.db.events.push(event);
+          this.saveDb();
           msg.reply('dodaned');
         } 
         if (command === 'info') {
@@ -108,6 +109,7 @@ module.exports = {
               return msg.reply('Event not founbd kurwa');
             }
             const replyEmbed = this.createEventEmbed(event);
+            msg.reply(replyEmbed);
         }
         if (command === 'events') {
             if (args.length == 1) {
