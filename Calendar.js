@@ -198,7 +198,7 @@ module.exports = {
                     console.log('collected:', collected)
                     console.log("legnth: " + collected.length);
                     console.log("size: " + collected.size);
-                    console.log("values " + Object.values(collected));
+                    console.log("first " + collected.first().content);
                     if (collected.size === 0) return;
                     if (Object.values(collected)[0].content !== '!y') {
                         msg.reply("Chickening out??? Decide you fucker")
