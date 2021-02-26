@@ -36,7 +36,7 @@ module.exports = {
         let args = msg.content.substring(1).split(' ');
         const command = args.shift();
         if (command === 'add') {
-          msg.reply('fuck off');
+          msg.reply('Slave riot. Fuck off, peasant. Do not waste my time.');
           // db.events.push(????)
         } 
       }

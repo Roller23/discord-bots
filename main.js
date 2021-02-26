@@ -11,11 +11,11 @@ Salvador.run(process.env.SALV_TOKEN);
 Friml.run(process.env.FRIML_TOKEN);
 
 Calendar.run([
-  'ODE0ODk5ODUwNzIxNDkzMDMz.YDkkoA.fWKfOwrpF2Q6mKV8SFBP_3C3tSA',
-  'ODE0OTAxMzc4ODI4NDY4Mjc2.YDkmDA.L2nid2OZwUVcUcpwqZRb050j7PQ',
-  'ODE0OTAxOTAyNjYzODc2NjU4.YDkmiQ.n-w6dbpKefAzuwvgeuLF5aruxWk',
-  'ODE0OTAyMjQxMzY1NDU4OTY2.YDkm2g.83xLxxRjDUjMZsNXrthenYEk7k4',
-  'ODE0OTAyMzUzMjE5NTUxMjcz.YDkm9Q.rYDPgCAaytdDZz8DF_AJyL063dY'
+  process.env.MONDAY_TOKEN,
+  process.env.TUESDAY_TOKEN,
+  process.env.WEDNESDAY_TOKEN,
+  process.env.THURSDAY_TOKEN,
+  process.env.FRIDAY_TOKEN,
 ]);
 
 // launch a http server to satisfy DigitalOcean health checks
