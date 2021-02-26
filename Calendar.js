@@ -193,16 +193,13 @@ module.exports = {
         if (command === 'clear') {
             msg.reply('Ar ya suyre? (!y/!n)');
             // this.clearRequested = true;
-            msg.channel.awaitMessages(m => true, { max: 1, time: 15000, errors: ['time'] })
+            msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
-                    console.log("in");
                     if (collected.size === 0) return;
-                    console.log("size looks good");
+                    console.log(Object.values(collected));
                     if (Object.values(collected)[0].content !== '!y') {
-                        console.log("ło kurwa co");
                         msg.reply("Chickening out??? Decide you fucker")
                     } else {
-                        console.log("in elsik");
                         this.db.events = [];
                         this.saveDb();
                         msg.reply("You madman, cleared all events for ya");
@@ -247,6 +244,62 @@ module.exports = {
 // !clear
 
 // !addmeme KCK "http://url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
 
 // TODO:
 // - notifications
