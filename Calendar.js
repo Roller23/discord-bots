@@ -49,6 +49,7 @@ module.exports = {
           }
           let event = new Event();
           event.date = new Date();
+          let year = event.date.getFullYear();
           let dateInfo = args[0].split('/');
           let timeInfo = ['0','0'];
           
