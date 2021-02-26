@@ -27,7 +27,7 @@ module.exports = {
     }
   },
   replaceQuotes(str) {
-    while (str.contains('"')) {
+    while (str.includes('"')) {
       str = str.replace('"', '');
     }
     return str;
@@ -57,12 +57,10 @@ module.exports = {
           let dateInfo = args[0].split('/');
           let timeInfo = ['0','0'];
           
-          // !add x "tresc" - dodaj event za x dni
           if (dateInfo.length == 1) {
             let days = dateInfo[0];
             event.date.setDate(event.date.getDate() + days);
           } 
-          // !add d/m "tresc" - dodaj event x dnia y miesiąca
           else {
               let day = dateInfo[0];
               let month = dateInfo[1];
@@ -106,3 +104,9 @@ module.exports = {
 
 // !add d/m nazwa opis -przedmiot
 // !add d/m hh:mm nazwa opis -przedmiot
+
+// [1] 16/04
+// !info 1
+// !events
+// !events 2
+// !events 16/04
