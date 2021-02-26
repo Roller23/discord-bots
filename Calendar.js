@@ -192,14 +192,14 @@ module.exports = {
         }
         if (command === 'clear') {
             msg.reply('Ar ya suyre? (!y/!n)')
-            msg.channel.awaitMessages(m => m.content.toLowerCase() === '!y', { time: 15000, errors: ['timeout'] })
+            msg.channel.awaitMessages(m => m.content === '!y', { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
+                    if (collected.length === 0) return;
                     this.db.events = [];
                     this.saveDb();
                     msg.reply("You madman, cleared all events for ya");
                 })
                 .catch(collected => msg.reply("No luck for ya, timeout"));
-            
         }
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
@@ -232,3 +232,5 @@ module.exports = {
 // !clear
 
 // !addmeme KCK "http://url.jpg"
+
+// NIKT MNIE NIE BĘDZIE 
