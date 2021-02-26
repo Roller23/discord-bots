@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { readFileSync } = require('fs');
-const { writeFileSync } = require('node:fs');
+const { writeFileSync } = require('fs');
 
 class Event {
   constructor(name, desc, subject, date) {
