@@ -192,7 +192,7 @@ module.exports = {
         }
         if (command === 'clear') {
             msg.reply('Ar ya suyre? (!y/!n)');
-            msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
+            msg.channel.awaitMessages(m => true, { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
                     if (collected.size === 0) return;
                     if (Object.values(collected)[0].content !== '!y') {
