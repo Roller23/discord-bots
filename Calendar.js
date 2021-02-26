@@ -191,7 +191,7 @@ module.exports = {
             }
         }
         if (command === 'clear') {
-            msg.reply('Ar ya suyre? (!y)')
+            msg.reply('Ar ya suyre? (!y/!n)');
             msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
                     if (collected.length === 0) return;
@@ -237,4 +237,9 @@ module.exports = {
 
 // !addmeme KCK "http://url.jpg"
 
-// NIKT MNIE NIE BĘDZIE 
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - 
