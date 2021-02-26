@@ -26,6 +26,12 @@ module.exports = {
       } catch (e) {}
     }
   },
+  replaceQuotes(str) {
+    while (str.contains('"')) {
+      str = str.replace('"', '');
+    }
+    return str;
+  },
   run(tokens) {
     this.loadDb();
     for (const token of tokens) {
@@ -43,13 +49,11 @@ module.exports = {
         let args = msg.content.substring(1).match(/[^\s"']+|"([^"]*)"/gmi);
         const command = args.shift();
         if (command === 'add') {
-          msg.reply('Slave riot. F*ck off, peasant. Do not waste my time.');
           if (args.length === 0) {
             return msg.reply('What the heck do you want from me zią');
           }
           let event = new Event();
           event.date = new Date();
-          let year = event.date.getFullYear();
           let dateInfo = args[0].split('/');
           let timeInfo = ['0','0'];
           
@@ -62,6 +66,7 @@ module.exports = {
           else {
               let day = dateInfo[0];
               let month = dateInfo[1];
+              let year = event.date.getFullYear();
               event.date.setFullYear(year, month, day);
           }
 
@@ -76,14 +81,14 @@ module.exports = {
             event.date.setMinutes(timeInfo[1]);
           }
 
-          event.name = args[1+argOffset];
+          event.name = this.replaceQuotes(args[1+argOffset]);
           if(args[2+argOffset].startsWith("-")) {
             event.desc = '';
-            argOffset++;
           } else {
-            event.desc = args[2+argOffset];
+            event.desc = this.replaceQuotes(args[2+argOffset]);
+            argOffset++;
           }
-          event.subject = args[2+argOffset];
+          event.subject = args[2+argOffset].substring(1);
           msg.reply('test - ' + JSON.stringify(event));
         } 
       }
