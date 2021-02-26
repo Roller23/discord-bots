@@ -195,8 +195,11 @@ module.exports = {
             // this.clearRequested = true;
             msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
+                    console.log('collected:', collected)
+                    console.log("legnth: " + collected.length);
+                    console.log("size: " + collected.size);
+                    console.log("values " + Object.values(collected));
                     if (collected.size === 0) return;
-                    console.log(Object.values(collected));
                     if (Object.values(collected)[0].content !== '!y') {
                         msg.reply("Chickening out??? Decide you fucker")
                     } else {
@@ -244,6 +247,13 @@ module.exports = {
 // !clear
 
 // !addmeme KCK "http://url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
 
 // TODO:
 // - notifications
