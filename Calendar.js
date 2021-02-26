@@ -194,7 +194,7 @@ module.exports = {
             msg.reply('Ar ya suyre? (!y/!n)');
             msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
-                    if (collected.length === 0) return;
+                    if (collected.size === 0) return;
                     if (Object.values(collected)[0].content !== '!y') {
                         msg.reply("Chickening out??? Decide you fucker")
                     } else {
