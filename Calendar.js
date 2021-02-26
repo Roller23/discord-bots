@@ -19,6 +19,7 @@ module.exports = {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
       // slave.user.setUsername('Slave ' + (idx + 1));
+      master.guilds.get('592409592315772938').me.setNickname(`slave ${idx + 1}`);
     });
   },
   saveDb() {
@@ -176,11 +177,23 @@ module.exports = {
                 msg.reply(this.createListEmbed(this.db.events, date));
             }
         }
+        if (command === 'remove') {
+            if (args.length != 1) {
+                msg.reply("Which event you wanna get rid of, oi");
+            } else {
+                let index = Number(args[0])
+                if (!isNaN(index) && index > -1) {
+                    this.db.events.splice(index, 1);
+                }
+                this.saveDb();
+                msg.reply("Deleted that bad boi");
+            }
+        }
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
     setTimeout(() => this.showCalendar(), 1000 * 5);
-    console.log(master.guilds.get('592409592315772938'))
+    // console.log(master.guilds.get('592409592315772938'))
   }
 }
 
@@ -202,6 +215,6 @@ module.exports = {
 // !events 16/04
 
 // !remove 1
-// !remove .
+// !clear
 
 // !addMeme KCK "http://url.jpg"
