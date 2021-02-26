@@ -194,13 +194,16 @@ module.exports = {
             msg.reply('Ar ya suyre? (!y)')
             msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
-                    console.log(collected);
                     if (collected.length === 0) return;
-                    this.db.events = [];
-                    this.saveDb();
-                    msg.reply("You madman, cleared all events for ya");
+                    if (Object.values(collected)[0].content !== '!y') {
+                        msg.reply("Chickening out??? Decide you fucker")
+                    } else {
+                        this.db.events = [];
+                        this.saveDb();
+                        msg.reply("You madman, cleared all events for ya");
+                    }
                 })
-                .catch(collected => console.log("time's out mothafucka"));
+                .catch(collected => msg.reply("Time's out mothafucka"));
         }
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
