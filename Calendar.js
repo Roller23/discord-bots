@@ -192,12 +192,17 @@ module.exports = {
         }
         if (command === 'clear') {
             msg.reply('Ar ya suyre? (!y/!n)');
+            // this.clearRequested = true;
             msg.channel.awaitMessages(m => true, { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
+                    console.log("in");
                     if (collected.size === 0) return;
+                    console.log("size looks good");
                     if (Object.values(collected)[0].content !== '!y') {
+                        console.log("ło kurwa co");
                         msg.reply("Chickening out??? Decide you fucker")
                     } else {
+                        console.log("in elsik");
                         this.db.events = [];
                         this.saveDb();
                         msg.reply("You madman, cleared all events for ya");
@@ -208,6 +213,12 @@ module.exports = {
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
         }
+        // if (command === '!y') {
+
+        // }
+        // if (command === '!n') {
+
+        // }
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
@@ -236,6 +247,20 @@ module.exports = {
 // !clear
 
 // !addmeme KCK "http://url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
+
+// TODO:
+// - notifications
+// - changing nicknames
+// - memsy
+// - baza subjectsów
+// - url.jpg"
 
 // TODO:
 // - notifications
