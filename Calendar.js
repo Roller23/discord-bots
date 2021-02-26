@@ -17,7 +17,8 @@ module.exports = {
   db: {events: []},
   showCalendar() {
     this.slaves.forEach((slave, idx) => {
-      // slave.user.setUsername('Slave no. ' + (idx + 1));
+      if (!slave.user) return;
+      slave.user.setUsername('Slave no. ' + (idx + 1));
     });
   },
   saveDb() {
@@ -171,8 +172,8 @@ module.exports = {
         }
       }
     });
-    this.showCalendar();
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
+    setTimeout(() => this.showCalendar(), 1000 * 5);
   }
 }
 
@@ -187,8 +188,13 @@ module.exports = {
 // !add d/m nazwa opis -przedmiot
 // !add d/m hh:mm nazwa opis -przedmiot
 
-// [1] 16/04
+// [id] d/m/y
 // !info 1
 // !events
 // !events 2
 // !events 16/04
+
+// !remove 1
+// !remove .
+
+// !addMeme KCK "http://url.jpg"
