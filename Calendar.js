@@ -32,6 +32,16 @@ module.exports = {
     }
     return str;
   },
+  createEventEmbed(event) {
+    return new Discord.MessageEmbed()
+              .setColor('#123456')
+              .setTitle(event.name)
+              .setURL('https://omfgdogs.com')
+              .setDescription(event.desc)
+              .setThumbnail('https://media-exp1.licdn.com/dms/image/C4D03AQEg_qDgf_XUow/profile-displayphoto-shrink_200_200/0/1517512903046?e=1616025600&v=beta&t=bAOQwY-9sSOWfxMJtFjQh0-tsRQC-k2sZTFCGPv0qQI')
+              .addField({name: 'Subject', value: event.subject})
+              .addField({name: 'Date', value: event.date.toLocaleString("pl-PL")});
+  },
   run(tokens) {
     this.loadDb();
     for (const token of tokens) {
@@ -87,8 +97,26 @@ module.exports = {
             argOffset++;
           }
           event.subject = args[2+argOffset].substring(1);
-          msg.reply('test - ' + JSON.stringify(event));
+          msg.channel.send(this.createEventEmbed(event));
+          // msg.reply('ar ju siur abot dis?');
+          this.db.events.push(event);
+          msg.reply('dodaned');
         } 
+        if (command === 'info') {
+            let event = db.events[Number(args[0])];
+            if (!event) {
+              return msg.reply('Event not founbd kurwa');
+            }
+            const replyEmbed = this.createEventEmbed(event);
+        }
+        if (command === 'events') {
+            switch (args.length)
+            if (args.length == 1) {
+                db.events.forEach(index, el => {
+                    msg.reply(JSON.stringify(el));
+                });
+            }
+        }
       }
     });
   }
