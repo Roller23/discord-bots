@@ -19,7 +19,7 @@ module.exports = {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
       // slave.user.setUsername('Slave ' + (idx + 1));
-      master.guilds.get('592409592315772938').me.setNickname(`slave ${idx + 1}`);
+      slave.guilds.get('592409592315772938').me.setNickname(`slave ${idx + 1}`);
     });
   },
   saveDb() {
@@ -188,6 +188,11 @@ module.exports = {
                 this.saveDb();
                 msg.reply("Deleted that bad boi");
             }
+        }
+        if (command === 'clear') {
+            this.db.events = [];
+            this.saveDb();
+            msg.reply("You madman, cleared all events for ya");
         }
       }
     });
