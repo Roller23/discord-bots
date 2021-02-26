@@ -17,7 +17,7 @@ module.exports = {
   db: {events: []},
   showCalendar() {
     this.slaves.forEach((slave, idx) => {
-      slave.setNickname('Slave no. ' + (idx + 1));
+      slave.user.setUsername('Slave no. ' + (idx + 1));
     });
   },
   saveDb() {
@@ -54,15 +54,23 @@ module.exports = {
   createListEmbedEl(event, idx) {
     return "["+idx+"] "+event.name+" ("+event.date.toLocaleString("pl-PL")+") ("+event.subject+")";
   },
+  compareDate(eventDate, date) {
+    return eventDate.getFullYear() === date.getFullYear() &&
+    eventDate.getMonth() === date.getMonth() &&
+    eventDate.getDate() === date.getDate();
+  },
   createListEmbed(events, date) {
+    if (events.length == 0) {
+        return "No events planned.";
+    }
     let str = ''
-    if(date !== undefined) {
+    if(date === undefined) {
       events.forEach((el, idx) => {
         str+=this.createEventEmbedEl(el, idx)+'\n';
       });
     }
     else {
-      events.filter(event => event.date.getTime() === date.getTime()).forEach((el, idx) => {
+      events.filter(event => this.compareDate(event.date, date)).forEach((el, idx) => {
         str+=this.createEventEmbedEl(el, idx)+'\n';
       });
     }
@@ -163,8 +171,8 @@ module.exports = {
         }
       }
     });
-    // this.showCalendar();
-    // const interval = setInterval(() => this.showCalendar(), 1000 * 60);
+    this.showCalendar();
+    const interval = setInterval(() => this.showCalendar(), 1000 * 60);
   }
 }
 
