@@ -1,26 +1,33 @@
 const Discord = require('discord.js');
 const { readFileSync } = require('fs');
+const { writeFileSync } = require('node:fs');
 
 class Event {
-  constructor(name, desc, subject, role, date) {
+  constructor(name, desc, subject, date) {
     this.name = name;
     this.desc = desc;
     this.subject = subject;
-    this.role = role;
     this.date = date;
   }
 }
 
 module.exports = {
   slaves: [],
-  run(tokens) {
-    let db = {events: []};
-    const json = readFileSync('./database.json');
+  dbPath: './database.json',
+  db: {events: []},
+  saveDb() {
+    writeFileSync(this.dbPath, JSON.stringify(this.db), {encoding: 'utf-8'});
+  },
+  loadDb() {
+    const json = readFileSync(this.dbPath, {encoding: 'utf-8'});
     if (json) {
       try {
-        db = JSON.parse(json);
+        this.db = JSON.parse(json);
       } catch (e) {}
     }
+  },
+  run(tokens) {
+    this.loadDb();
     for (const token of tokens) {
       const slave = new Discord.Client();
       this.slaves.push(slave);
@@ -33,11 +40,49 @@ module.exports = {
     const master = this.slaves[0];
     master.on('message', msg => {
       if (msg.content.startsWith('!')) {
-        let args = msg.content.substring(1).split(' ');
+        let args = msg.content.substring(1).match(/[^\s"']+|"([^"]*)"/gmi);
         const command = args.shift();
         if (command === 'add') {
           msg.reply('Slave riot. F*ck off, peasant. Do not waste my time.');
-          // db.events.push(????)
+          if (args.length === 0) {
+            return msg.reply('What the heck do you want from me zią');
+          }
+          let event = new Event();
+          let dateInfo = args[0].split('/');
+          let timeInfo = ['0','0'];
+          
+          // !add x "tresc" - dodaj event za x dni
+          if (dateInfo.length == 1) {
+            let days = dateInfo[0];
+            event.date.setDate(date.getDate() + days);
+          } 
+          // !add d/m "tresc" - dodaj event x dnia y miesiąca
+          else {
+              let day = dateInfo[0];
+              let month = dateInfo[1];
+              date.setFullYear(year, month, day);
+          }
+
+          let argOffset = 0;
+          if(!args[1].startsWith('"')) {
+            timeInfo = args[1].split(':');
+            if(timeInfo.length != 2) {
+              return msg.reply("Wrong arguments given, mate (or lass, idk).");
+            }
+            argOffset++;
+            event.date.setHours(timeInfo[0]);
+            event.date.setMinutes(timeInfo[1]);
+          }
+
+          event.name = args[1+argOffset];
+          if(args[2+argOffset].startsWith("-")) {
+            event.desc = '';
+            argOffset++;
+          } else {
+            event.desc = args[2+argOffset];
+          }
+          event.subject = args[2+argOffset];
+          msg.reply('test - ' + JSON.stringify(event));
         } 
       }
     });
@@ -46,9 +91,11 @@ module.exports = {
 
 // !add x "tresc" - dodaj event za x dni
 // !add d/m "tresc" - dodaj event x dnia y miesiąca
-// !add d/m/r "tresc" - dodaj event x dnia y mc z roku
 // !add d/m hh:mm "tresc" - dodaj event x dnia y mc o h:m
-// !add d/m/r hh:mm "tresc" - dodaj event d dnia m mc r roku o hh:mm
 // po "tresc" przedmiot i opis opcjonalnie
 
-// Nazwa, Opis, Przedmiot, Rola (do pingowania), Data/Czas,
+// Nazwa, Opis, przedmiot, Data/Czas,
+// !add x nazwa opis -przedmiot
+
+// !add d/m nazwa opis -przedmiot
+// !add d/m hh:mm nazwa opis -przedmiot
