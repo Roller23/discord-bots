@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { readFileSync } = require('node:fs');
+const { readFileSync } = require('fs');
 
 class Event {
   constructor(name, desc, subject, role, date) {
@@ -36,7 +36,7 @@ module.exports = {
         let args = msg.content.substring(1).split(' ');
         const command = args.shift();
         if (command === 'add') {
-          msg.reply('Slave riot. Fuck off, peasant. Do not waste my time.');
+          msg.reply('Slave riot. F*ck off, peasant. Do not waste my time.');
           // db.events.push(????)
         } 
       }
