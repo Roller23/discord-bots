@@ -66,12 +66,12 @@ module.exports = {
     let str = ''
     if(date === undefined) {
       events.forEach((el, idx) => {
-        str+=this.createEventEmbedEl(el, idx)+'\n';
+        str+=this.createListEmbedEl(el, idx)+'\n';
       });
     }
     else {
       events.filter(event => this.compareDate(event.date, date)).forEach((el, idx) => {
-        str+=this.createEventEmbedEl(el, idx)+'\n';
+        str+=this.createListEmbedEl(el, idx)+'\n';
       });
     }
     return new Discord.MessageEmbed().setDescription(str);
