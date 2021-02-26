@@ -36,13 +36,6 @@ module.exports = {
         const data = {genre: 'classical', key: 'C', instrument: 'piano'};
         socket.emit('song', data);
         msg.reply('uno momento');
-      } else if (msg.content.toLowerCase() === '@someone') {
-        for (let u in self.users) {
-          let user = self.users[u];
-          if (user instanceof Discord.User) {
-            console.log("["+u+"] " + user.username);
-          }
-        }
       }
     });
     client.login(TOKEN);
