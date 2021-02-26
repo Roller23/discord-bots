@@ -191,15 +191,16 @@ module.exports = {
             }
         }
         if (command === 'clear') {
-            msg.reply('Ar ya suyre? (!y/!n)')
-            msg.channel.awaitMessages(m => m.content === '!y', { max: 1, time: 15000, errors: ['time'] })
+            msg.reply('Ar ya suyre? (!y)')
+            msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
+                    console.log(collected);
                     if (collected.length === 0) return;
                     this.db.events = [];
                     this.saveDb();
                     msg.reply("You madman, cleared all events for ya");
                 })
-                .catch(collected => msg.reply("No luck for ya, timeout"));
+                .catch(collected => console.log("time's out mothafucka"));
         }
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
