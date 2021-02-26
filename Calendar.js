@@ -104,7 +104,7 @@ module.exports = {
           msg.reply('dodaned');
         } 
         if (command === 'info') {
-            let event = db.events[Number(args[0])];
+            let event = this.db.events[Number(args[0])];
             if (!event) {
               return msg.reply('Event not founbd kurwa');
             }
@@ -112,11 +112,11 @@ module.exports = {
             msg.reply(replyEmbed);
         }
         if (command === 'events') {
-            if (args.length == 1) {
-                db.events.forEach(el => {
+            if (args.length == 0) {
+                this.db.events.forEach(el => {
                     msg.reply(this.createEventEmbed(el));
                 });
-            }
+            } 
         }
       }
     });
