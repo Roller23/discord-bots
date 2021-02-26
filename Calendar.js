@@ -18,7 +18,7 @@ module.exports = {
   showCalendar() {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
-      slave.user.setUsername('Slave ' + (idx + 1));
+      // slave.user.setUsername('Slave ' + (idx + 1));
     });
   },
   saveDb() {
@@ -142,6 +142,9 @@ module.exports = {
           msg.channel.send(this.createEventEmbed(event));
           // msg.reply('ar ju siur abot dis?');
           this.db.events.push(event);
+          this.db.events.sort((ev1, ev2) => {
+              return ev1.date - ev2.date;
+          });
           this.saveDb();
           msg.reply('dodaned');
         } 
@@ -167,6 +170,8 @@ module.exports = {
                         date.setFullYear(year + 1);
                     }
                     msg.reply(this.createListEmbed(this.db.events, date));
+                } else {
+                    
                 }
             }
         }
@@ -174,6 +179,7 @@ module.exports = {
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
     setTimeout(() => this.showCalendar(), 1000 * 5);
+    console.log(master.guilds)
   }
 }
 
