@@ -17,7 +17,7 @@ module.exports = {
   db: {events: []},
   showCalendar() {
     this.slaves.forEach((slave, idx) => {
-      slave.user.setUsername('Slave no. ' + (idx + 1));
+      // slave.user.setUsername('Slave no. ' + (idx + 1));
     });
   },
   saveDb() {
