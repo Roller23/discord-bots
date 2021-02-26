@@ -185,9 +185,11 @@ module.exports = {
                 let index = Number(args[0])
                 if (!isNaN(index) && index > -1) {
                     this.db.events.splice(index, 1);
+                    this.saveDb();
+                    msg.reply("Deleted that bad boi");
+                } else {
+                    msg.reply(`${args[0]} is not a valid index`);
                 }
-                this.saveDb();
-                msg.reply("Deleted that bad boi");
             }
         }
         if (command === 'clear') {
