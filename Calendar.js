@@ -15,6 +15,11 @@ module.exports = {
   slaves: [],
   dbPath: './database.json',
   db: {events: []},
+  showCalendar() {
+    this.slaves.forEach((slave, idx) => {
+      slave.setNickname('Slave no. ' + (idx + 1));
+    });
+  },
   saveDb() {
     writeFileSync(this.dbPath, JSON.stringify(this.db), {encoding: 'utf-8'});
   },
@@ -25,6 +30,10 @@ module.exports = {
         this.db = JSON.parse(json);
       } catch (e) {}
     }
+    const self = this;
+    self.db.events.forEach((ev, idx) => {
+      self.db.events[idx].date = new Date(ev.date);
+    });
   },
   replaceQuotes(str) {
     while (str.includes('"')) {
@@ -38,9 +47,26 @@ module.exports = {
               .setTitle(event.name)
               .setURL('https://omfgdogs.com')
               .setDescription(event.desc)
-              .setThumbnail('https://media-exp1.licdn.com/dms/image/C4D03AQEg_qDgf_XUow/profile-displayphoto-shrink_200_200/0/1517512903046?e=1616025600&v=beta&t=bAOQwY-9sSOWfxMJtFjQh0-tsRQC-k2sZTFCGPv0qQI')
+              .setThumbnail('https://cdn.discordapp.com/attachments/718121700163715164/814954240534380584/unknown.png')
               .addField('Subject', event.subject)
               .addField('Date', event.date.toLocaleString("pl-PL"));
+  },
+  createListEmbedEl(event, idx) {
+    return "["+idx+"] "+event.name+" ("+event.date.toLocaleString("pl-PL")+") ("+event.subject+")";
+  },
+  createListEmbed(events, date) {
+    let str = ''
+    if(date !== undefined) {
+      events.forEach((el, idx) => {
+        str+=this.createEventEmbedEl(el, idx)+'\n';
+      });
+    }
+    else {
+      events.filter(event => event.date.getTime() === date.getTime()).forEach((el, idx) => {
+        str+=this.createEventEmbedEl(el, idx)+'\n';
+      });
+    }
+    return new Discord.MessageEmbed().setDescription(str);
   },
   run(tokens) {
     this.loadDb();
@@ -64,6 +90,9 @@ module.exports = {
           }
           let event = new Event();
           event.date = new Date();
+          event.date.setHours(23);
+          event.date.setMinutes(59);
+          event.date.setSeconds(59);
           let dateInfo = args[0].split('/');
           let timeInfo = ['0','0'];
           
@@ -76,6 +105,9 @@ module.exports = {
               let month = Number(dateInfo[1]) - 1;
               let year = event.date.getFullYear();
               event.date.setFullYear(year, month, day);
+              if (event.date < new Date()) {
+                event.date.setFullYear(year + 1);
+            }
           }
 
           let argOffset = 0;
@@ -87,6 +119,7 @@ module.exports = {
             argOffset++;
             event.date.setHours(timeInfo[0]);
             event.date.setMinutes(timeInfo[1]);
+            event.date.setSeconds(0);
           }
 
           event.name = this.replaceQuotes(args[1+argOffset]);
@@ -113,13 +146,25 @@ module.exports = {
         }
         if (command === 'events') {
             if (args.length == 0) {
-                this.db.events.forEach(el => {
-                    msg.reply(this.createEventEmbed(el));
-                });
-            } 
+                msg.reply(this.createListEmbed(this.db.events));
+            } else {
+                if (args[0].includes("/")) {
+                    let dateInfo = args[0].split("/");
+                    let date = new Date();
+                    let day = dateInfo[0];
+                    let month = dateInfo[1] - 1;
+                    date.setFullYear(year, month, day);
+                    if (date < new Date()) {
+                        date.setFullYear(year + 1);
+                    }
+                    msg.reply(this.createListEmbed(this.db.events, date));
+                }
+            }
         }
       }
     });
+    this.showCalendar();
+    const interval = setInterval(() => this.showCalendar(), 1000 * 60);
   }
 }
 
