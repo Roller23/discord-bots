@@ -192,20 +192,15 @@ module.exports = {
         }
         if (command === 'clear') {
             msg.reply('Ar ya suyre? (!y/!n)');
-            // this.clearRequested = true;
             msg.channel.awaitMessages(m => ['!y', '!n'].includes(m.content), { max: 1, time: 15000, errors: ['time'] })
                 .then(collected => {
-                    console.log('collected:', collected)
-                    console.log("legnth: " + collected.length);
-                    console.log("size: " + collected.size);
-                    console.log("first " + collected.first().content);
                     if (collected.size === 0) return;
-                    if (Object.values(collected)[0].content !== '!y') {
-                        msg.reply("Chickening out??? Decide you fucker")
-                    } else {
+                    if (collected.first().content === '!y') {
                         this.db.events = [];
                         this.saveDb();
                         msg.reply("You madman, cleared all events for ya");
+                    } else {
+                        msg.reply("Chickening out??? Decide you fucker")
                     }
                 })
                 .catch(collected => msg.reply("Time's out mothafucka"));
@@ -213,12 +208,6 @@ module.exports = {
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
         }
-        // if (command === '!y') {
-
-        // }
-        // if (command === '!n') {
-
-        // }
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
