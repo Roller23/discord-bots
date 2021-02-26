@@ -110,10 +110,9 @@ module.exports = {
             const replyEmbed = this.createEventEmbed(event);
         }
         if (command === 'events') {
-            switch (args.length)
             if (args.length == 1) {
-                db.events.forEach(index, el => {
-                    msg.reply(JSON.stringify(el));
+                db.events.forEach(el => {
+                    msg.reply(this.createEventEmbed(el));
                 });
             }
         }
