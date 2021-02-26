@@ -19,7 +19,9 @@ module.exports = {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
       // slave.user.setUsername('Slave ' + (idx + 1));
-      slave.guilds.get('592409592315772938').me.setNickname(`slave ${idx + 1}`);
+      slave.guilds.fetch('592409592315772938').then(guild => {
+        guild.me.setNickname(`slave ${idx + 1}`);
+      });
     });
   },
   saveDb() {
@@ -194,6 +196,9 @@ module.exports = {
             this.saveDb();
             msg.reply("You madman, cleared all events for ya");
         }
+        if (command === 'addmeme') {
+            msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
+        }
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
@@ -222,4 +227,4 @@ module.exports = {
 // !remove 1
 // !clear
 
-// !addMeme KCK "http://url.jpg"
+// !addmeme KCK "http://url.jpg"
