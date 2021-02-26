@@ -160,26 +160,27 @@ module.exports = {
             if (args.length == 0) {
                 msg.reply(this.createListEmbed(this.db.events));
             } else {
+                let date = new Date();
                 if (args[0].includes("/")) {
                     let dateInfo = args[0].split("/");
-                    let date = new Date();
                     let day = dateInfo[0];
                     let month = dateInfo[1] - 1;
                     date.setFullYear(year, month, day);
                     if (date < new Date()) {
                         date.setFullYear(year + 1);
                     }
-                    msg.reply(this.createListEmbed(this.db.events, date));
                 } else {
-                    
+                    let days = Number(args[0]);
+                    date.setDate(date.getDate() + days);
                 }
+                msg.reply(this.createListEmbed(this.db.events, date));
             }
         }
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
     setTimeout(() => this.showCalendar(), 1000 * 5);
-    console.log(master.guilds)
+    console.log(master.guilds.get('592409592315772938'))
   }
 }
 
