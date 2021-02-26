@@ -18,7 +18,6 @@ module.exports = {
   showCalendar() {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
-      // slave.user.setUsername('Slave ' + (idx + 1));
       slave.guilds.fetch('592409592315772938').then(guild => {
         guild.me.setNickname(`slave ${idx + 1}`);
       });
@@ -105,6 +104,7 @@ module.exports = {
           event.date.setHours(23);
           event.date.setMinutes(59);
           event.date.setSeconds(59);
+          let year = event.date.getFullYear();
           let dateInfo = args[0].split('/');
           let timeInfo = ['0','0'];
           
@@ -115,7 +115,6 @@ module.exports = {
           else {
               let day = Number(dateInfo[0]);
               let month = Number(dateInfo[1]) - 1;
-              let year = event.date.getFullYear();
               event.date.setFullYear(year, month, day);
               if (event.date < new Date()) {
                 event.date.setFullYear(year + 1);
@@ -192,9 +191,15 @@ module.exports = {
             }
         }
         if (command === 'clear') {
-            this.db.events = [];
-            this.saveDb();
-            msg.reply("You madman, cleared all events for ya");
+            msg.reply('Ar ya suyre? (!y/!n)')
+            msg.channel.awaitMessages(m => m.content.toLowerCase() === '!y', { time: 15000, errors: ['timeout'] })
+                .then(collected => {
+                    this.db.events = [];
+                    this.saveDb();
+                    msg.reply("You madman, cleared all events for ya");
+                })
+                .catch(collected => msg.reply("No luck for ya, timeout"));
+            
         }
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
@@ -203,7 +208,6 @@ module.exports = {
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
     setTimeout(() => this.showCalendar(), 1000 * 5);
-    // console.log(master.guilds.get('592409592315772938'))
   }
 }
 
