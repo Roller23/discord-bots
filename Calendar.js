@@ -163,8 +163,8 @@ module.exports = {
         }
       }
     });
-    this.showCalendar();
-    const interval = setInterval(() => this.showCalendar(), 1000 * 60);
+    // this.showCalendar();
+    // const interval = setInterval(() => this.showCalendar(), 1000 * 60);
   }
 }
 
