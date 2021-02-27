@@ -77,7 +77,7 @@ module.exports = {
           });
           let remainderStr = '';
           if (remainder) {
-            remainderStr ` [+${remainder}]`;
+            remainderStr = ` [+${remainder}]`;
           }
           const str = `${event.date.getHours()}:${event.date.getMinutes()} (${event.subject})${remainderStr}`;
           self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
@@ -141,8 +141,7 @@ module.exports = {
     for (const token of tokens) {
       this.slaves.push(new Discord.Client());
       self.loginSlave(this.slaves[this.slaves.length - 1], token).then(loggedSlave => {
-        // loggedSlave.user.setActivity('work in progress', {type: 'PLAYING'});
-        console.log('slave loggged');
+        console.log('slave loggged', loggedSlave);
       });
     }
     const master = this.slaves[0];
@@ -257,7 +256,9 @@ module.exports = {
                       if (err) {
                         return msg.reply("couldnt delete that bad boi");
                       }
-                      self.db.collection('events').deleteOne({_id: res[res.length - 1]._id});
+                      self.db.collection('events').deleteOne({_id: res[res.length - 1]._id}, (err, res) => {
+                        if (!err) self.showCalendar();
+                      });
                       msg.reply("Deleted that bad boi");
                     });
                 } else {
@@ -271,7 +272,9 @@ module.exports = {
                 .then(collected => {
                     if (collected.size === 0) return;
                     if (collected.first().content === '!y') {
-                        this.db.collection('events').deleteMany({});
+                        this.db.collection('events').deleteMany({}, (err, res) => {
+                          if (!err) self.showCalendar();
+                        });
                         msg.reply("You madman, cleared all events for ya");
                     } else {
                         msg.reply("Chickening out??? Decide you fucker")
