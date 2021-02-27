@@ -54,7 +54,7 @@ module.exports = {
         let today = new Date();
         let max = new Date();
         max.setDate(today.getDate() + 7);
-        res = res.filter(e => e.date <= max);
+        res = res.filter(e => e.date >= today && e.date <= max);
         let days = [];
         for (const event of res) {
           for (let day = 0; day < 7; day++) {
@@ -249,15 +249,16 @@ module.exports = {
                     }
                 } else {
                     let days = Number(args[0]);
+                    console.log(args[0], days, 'days test');
                     if (isNaN(days)) {
                       let weekdaysLookup = [
-                        ['ndz', 'niedziela', 'sun', 'sunday'],
-                        ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday'],
-                        ['wt', 'wtorek', 'tue', 'tuesday'],
-                        ['sr', 'sroda', 'środa', 'wed', 'wednesday'],
-                        ['czw', 'czwartek', 'thu', 'thursday'],
-                        ['pt', 'piatek', 'piątek', 'fri', 'friday'],
-                        ['sb', 'sobota', 'sat', 'saturday']
+                        ['ndz', 'niedziela', 'sun', 'sunday', '日'],
+                        ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
+                        ['wt', 'wtorek', 'tue', 'tuesday', '火'],
+                        ['sr', 'sroda', 'środa', 'wed', 'wednesday', '水'],
+                        ['czw', 'czwartek', 'thu', 'thursday', '木'],
+                        ['pt', 'piatek', 'piątek', 'fri', 'friday', '金'],
+                        ['sb', 'sobota', 'sat', 'saturday', '土']
                       ];
                       let correctDay = false;
                       for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
@@ -372,3 +373,5 @@ module.exports = {
 // - baza subjectsów
 // - add/remove/info PON
 // - add -me ?
+// - add day hh/mm
+// - usuwanie przestarzalych / archiwum
