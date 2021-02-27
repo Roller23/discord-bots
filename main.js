@@ -18,7 +18,7 @@ Calendar.run([
   process.env.THURSDAY_TOKEN,
   process.env.FRIDAY_TOKEN,
   process.env.SATURDAY_TOKEN
-]);
+], Friml.client);
 
 // launch a http server to satisfy DigitalOcean health checks
 

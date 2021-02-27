@@ -140,7 +140,7 @@ module.exports = {
       });
     });
   },
-  async run(tokens) {
+  async run(tokens, master) {
     this.tokens = tokens;
     await this.connectToDb();
     const self = this;
@@ -151,7 +151,6 @@ module.exports = {
         self.setNickname(loggedSlave, 'Calendar')
       });
     }
-    const master = this.slaves[0];
     master.on('message', async msg => {
       if (msg.content.startsWith('!')) {
         let args = msg.content.substring(1).match(/[^\s"']+|"([^"]*)"/gmi);
