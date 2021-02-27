@@ -1,7 +1,5 @@
 const Discord = require('discord.js');
-const { readFileSync } = require('fs');
-const { writeFileSync } = require('fs');
-const { existsSync } = require('fs');
+const MongoClient = require('mongodb').MongoClient;
 
 class Event {
   constructor(name, desc, subject, date) {
@@ -14,32 +12,36 @@ class Event {
 
 module.exports = {
   slaves: [],
-  dbPath: './database.json',
-  db: {events: []},
+  db: null,
+  guildID: '592409592315772938',
+  connectToDb() {
+    const uri = `mongodb+srv://domopedia:${process.env.MONGO_PASSWORD}@bots-cluster.k06nu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+    const self = this;
+    self.client = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+    return new Promise((resolve, reject) => {
+      self.client.connect(err => {
+        if (err) reject(err);
+        self.db = self.client.db('main-db');
+        self.db.collection('events').createIndex({index: 1});
+        resolve(self.db);
+      });
+    })
+  },
+  getAll(collection) {
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self.db.collection(collection).find({}).toArray((err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    })
+  },
   showCalendar() {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
-      slave.guilds.fetch('592409592315772938').then(guild => {
+      slave.guilds.fetch(this.guildID).then(guild => {
         guild.me.setNickname(`day ${idx + 1}`);
       });
-    });
-  },
-  saveDb() {
-    writeFileSync(this.dbPath, JSON.stringify(this.db), {encoding: 'utf-8'});
-  },
-  loadDb() {
-    if (!existsSync(this.dbPath)) {
-      return writeFileSync(this.dbPath, '', {encoding: 'utf-8', flag: 'wx'});
-    }
-    const json = readFileSync(this.dbPath, {encoding: 'utf-8'});
-    if (json) {
-      try {
-        this.db = JSON.parse(json);
-      } catch (e) {}
-    }
-    const self = this;
-    self.db.events.forEach((ev, idx) => {
-      self.db.events[idx].date = new Date(ev.date);
     });
   },
   replaceQuotes(str) {
@@ -83,14 +85,14 @@ module.exports = {
     }
     return new Discord.MessageEmbed().setDescription(str);
   },
-  run(tokens) {
-    this.loadDb();
+  async run(tokens) {
+    await this.connectToDb();
     for (const token of tokens) {
       const slave = new Discord.Client();
       this.slaves.push(slave);
       slave.on('ready', () => {
         console.log(`Slave added ${slave.user.tag}!`);
-        slave.user.setActivity('being a slave', {type: 'PLAYING'});
+        slave.user.setActivity('work in progress', {type: 'PLAYING'});
       })
       slave.login(token);
     }
@@ -147,15 +149,24 @@ module.exports = {
           event.subject = args[2+argOffset].substring(1);
           msg.channel.send(this.createEventEmbed(event));
           // msg.reply('ar ju siur abot dis?');
-          this.db.events.push(event);
-          this.db.events.sort((ev1, ev2) => {
-              return ev1.date - ev2.date;
+          this.db.collection('events').insertOne(event, (err, result) => {
+            if (err) {
+              msg.reply('errorek ' + err.toString());
+            } else {
+              msg.reply('dodaned');
+            }
           });
-          this.saveDb();
-          msg.reply('dodaned');
+          // cant do this anymore
+          // this.db.events.sort((ev1, ev2) => {
+          //     return ev1.date - ev2.date;
+          // });
         } 
         if (command === 'info') {
-            let event = this.db.events[Number(args[0])];
+            let idx = Number(args[0]);
+            if (isNaN(idx)) {
+              return msg.reply('invalid index mate');
+            }
+            let event = await this.db.collection('events').findOne({index: idx});
             if (!event) {
               return msg.reply('Event not founbd kurwa');
             }
@@ -164,7 +175,7 @@ module.exports = {
         }
         if (command === 'events') {
             if (args.length == 0) {
-                msg.reply(this.createListEmbed(this.db.events));
+                msg.reply(this.createListEmbed(await this.getAll('events')));
             } else {
                 let date = new Date();
                 if (args[0].includes("/")) {
@@ -179,7 +190,7 @@ module.exports = {
                     let days = Number(args[0]);
                     date.setDate(date.getDate() + days);
                 }
-                msg.reply(this.createListEmbed(this.db.events, date));
+                msg.reply(this.createListEmbed(await this.getAll('events'), date));
             }
         }
         if (command === 'remove') {
@@ -187,10 +198,14 @@ module.exports = {
                 msg.reply("Which event you wanna get rid of, oi");
             } else {
                 let index = Number(args[0])
-                if (!isNaN(index) && index > -1 && index < this.db.events.length) {
-                    this.db.events.splice(index, 1);
-                    this.saveDb();
-                    msg.reply("Deleted that bad boi");
+                if (!isNaN(index)) {
+                    this.db.collection('events').remove({index: index}, (err, res) => {
+                      if (err) {
+                        msg.reply("couldnt delete that bad boi");
+                      } else {
+                        msg.reply("Deleted that bad boi");
+                      }
+                    })
                 } else {
                     msg.reply(`${args[0]} is not a valid index`);
                 }
@@ -202,8 +217,7 @@ module.exports = {
                 .then(collected => {
                     if (collected.size === 0) return;
                     if (collected.first().content === '!y') {
-                        this.db.events = [];
-                        this.saveDb();
+                        this.db.collection('events').remove({});
                         msg.reply("You madman, cleared all events for ya");
                     } else {
                         msg.reply("Chickening out??? Decide you fucker")
