@@ -69,11 +69,11 @@ module.exports = {
         }
         for (let i = 0; i < 7; i++) {
           if (days[i] === undefined) {
-            self.slaves[i].user.setStatus('invisible');
-            self.setNickname(self.slaves[i], 'Calendar');
+            await self.slaves[i].user.setStatus('invisible');
+            await self.setNickname(self.slaves[i], 'Calendar');
             continue;
           }
-          self.slaves[i].user.setStatus('online');
+          await self.slaves[i].user.setStatus('online');
           let event = days[i].shift();
           let remainder = days[i].length;
           if (!self.slaves[i].user) {
@@ -251,13 +251,13 @@ module.exports = {
                     let days = Number(args[0]);
                     if (isNaN(days)) {
                       let weekdaysLookup = [
-                        ['ndz', 'niedziela'],
-                        ['pon', 'pn', 'poniedzialek', 'poniedziałek'],
-                        ['wt', 'wtorek'],
-                        ['sr', 'sroda', 'środa'],
-                        ['czw', 'czwartek'],
-                        ['pt', 'piatek', 'piątek'],
-                        ['sb', 'sobota']
+                        ['ndz', 'niedziela', 'sun', 'sunday'],
+                        ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday'],
+                        ['wt', 'wtorek', 'tue', 'tuesday'],
+                        ['sr', 'sroda', 'środa', 'wed', 'wednesday'],
+                        ['czw', 'czwartek', 'thu', 'thursday'],
+                        ['pt', 'piatek', 'piątek', 'fri', 'friday'],
+                        ['sb', 'sobota', 'sat', 'saturday']
                       ];
                       let correctDay = false;
                       for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
@@ -270,6 +270,10 @@ module.exports = {
                           break;
                         }
                       }
+                      console.log('days', days);
+                      console.log('date', date);
+                      console.log('corr?', correctDay);
+                      console.log('hotel?', 'trivago');
                       if (!correctDay) {
                         msg.reply('You made a typo or sth?');
                         return;
