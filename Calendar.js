@@ -143,6 +143,7 @@ module.exports = {
       ['sb', 'sobota', 'sat', 'saturday', '土']
     ];
     let correctDay = false;
+    let date = new Date();
     for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
       if (weekdaysLookup[weekday].includes(str)) {
         days = weekday - date.getDay();
