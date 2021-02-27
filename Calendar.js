@@ -38,8 +38,11 @@ module.exports = {
     })
   },
   setNickname(slave, name) {
-    slave.guilds.fetch(this.guildID).then(guild => {
-      guild.me.setNickname(name);
+    return new Promise(resolve => {
+      slave.guilds.fetch(this.guildID).then(guild => {
+        guild.me.setNickname(name);
+        resolve(slave);
+      });
     });
   },
   showCalendar() {
@@ -144,6 +147,7 @@ module.exports = {
       this.slaves.push(new Discord.Client());
       self.loginSlave(this.slaves[this.slaves.length - 1], token).then(loggedSlave => {
         console.log('slave loggged');
+        self.setNickname(loggedSlave, 'Calendar')
       });
     }
     const master = this.slaves[0];
@@ -295,7 +299,7 @@ module.exports = {
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
-    setTimeout(() => this.showCalendar(), 1000 * 5);
+    setTimeout(() => this.showCalendar(), 1000 * 10);
   }
 }
 
