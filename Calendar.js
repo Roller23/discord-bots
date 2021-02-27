@@ -79,7 +79,8 @@ module.exports = {
           if (remainder) {
             remainderStr = ` [+${remainder}]`;
           }
-          const str = `${event.date.getHours()}:${event.date.getMinutes()} (${event.subject})${remainderStr}`;
+          const minutes = event.date.getMinutes().toString().padStart(2, '0');
+          const str = `${event.date.getHours()}:${minutes} (${event.subject})${remainderStr}`;
           self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
         }
       });
