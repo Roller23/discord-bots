@@ -162,9 +162,8 @@ module.exports = {
             if (isNaN(idx)) {
               return msg.reply('invalid index mate');
             }
-            // let event = await this.db.collection('events').findOne({index: idx});
             const self = this;
-            self.db.collection('events').find({}).sort({date: -1}).limit(index + 1).toArray((err, res) => {
+            self.db.collection('events').find({}).sort({date: -1}).limit(index + 1).toArray(async (err, res) => {
               if (err) {
                 return msg.reply("couldnt find event kurła");
               }
