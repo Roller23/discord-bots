@@ -70,6 +70,7 @@ module.exports = {
         for (let i = 0; i < 7; i++) {
           if (days[i] === undefined) {
             self.slaves[i].user.setStatus('invisible');
+            self.setNickname(self.slaves[i], 'Calendar');
             continue;
           }
           self.slaves[i].user.setStatus('online');
@@ -297,7 +298,7 @@ module.exports = {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
         }
         if (command === 'help') {
-          let str = 'Here\'s a list of commands:\n';
+          let str = '```Here\'s a list of commands:\n';
           str += `!add dd/mm hh:mm "title" "description" -subject\n`;
           str += `!events - show all events\n`;
           str += `!events dd/mm show all events in a given day\n`;
@@ -305,7 +306,7 @@ module.exports = {
           str += `!remove <index> - remove a certain event\n`;
           str += `!clear - remove all events\n`;
           str += `!help - idk\n`
-          str += `!addmeme - Ada?`;
+          str += '!addmeme - Ada?```';
           msg.channel.send(str);
         }
       }
