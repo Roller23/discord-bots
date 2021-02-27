@@ -196,7 +196,7 @@ module.exports = {
           
           if (dateInfo.length == 1) {
             let days = Number(dateInfo[0]);
-            if (isNan(days)) {
+            if (isNaN(days)) {
               days = this.daysToWeekday(args[0]);
               if (days === undefined) {
                 return msg.reply('you dont know the days of the week or smth');
