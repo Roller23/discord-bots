@@ -67,13 +67,7 @@ module.exports = {
         }
         for (let i = 0; i < 7; i++) {
           if (days[i] === undefined) {
-            if (i === 0 && self.slaves[i].user) {
-              self.setNickname(self.slaves[i], 'No events');
-              self.slaves[i].user.setActivity('listening to requests', {type: 'PLAYING'});
-            } else if (self.slaves[i].user) {
-              self.slaves[i].destroy();
-              self.slaves[i].user = null;
-            }
+            self.slaves[i].user.setStatus('invisible');
             continue;
           }
           let event = days[i].shift();
