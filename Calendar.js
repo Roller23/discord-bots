@@ -14,7 +14,7 @@ module.exports = {
   slaves: [],
   db: null,
   guildID: '592409592315772938',
-  tokens = [],
+  tokens: [],
   connectToDb() {
     const uri = `mongodb+srv://domopedia:${process.env.MONGO_PASSWORD}@bots-cluster.k06nu.mongodb.net/domopedia?retryWrites=true&w=majority`;
     const self = this;
