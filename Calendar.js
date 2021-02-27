@@ -37,6 +37,11 @@ module.exports = {
       });
     })
   },
+  setNickname(slave, name) {
+    slave.guilds.fetch(self.guildID).then(guild => {
+      guild.me.setNickname(name);
+    });
+  },
   showCalendar() {
     const self = this;
     this.slaves.forEach((slave, idx) => {
@@ -62,7 +67,10 @@ module.exports = {
         }
         for (let i = 0; i < 7; i++) {
           if (days[i] === undefined) {
-            if (self.slaves[i].user) {
+            if (i === 0 && self.slaves[i].user) {
+              self.setNickname(self.slaves[i], 'No events');
+              self.slaves[i].user.setActivity('listening to requests', {type: 'PLAYING'});
+            } else if (self.slaves[i].user) {
               self.slaves[i].destroy();
               self.slaves[i].user = null;
             }
@@ -73,9 +81,7 @@ module.exports = {
           if (!self.slaves[i].user) {
             await self.loginSlave(self.slaves[i], self.tokens[i]);
           }
-          self.slaves[i].guilds.fetch(self.guildID).then(guild => {
-            guild.me.setNickname(event.name);
-          });
+          self.setNickname(self.slaves[i], event.name);
           let remainderStr = '';
           if (remainder) {
             remainderStr = ` [+${remainder}]`;
