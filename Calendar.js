@@ -11,7 +11,7 @@ class Event {
 }
 
 module.exports = {
-  weekdaysLookup = [
+  weekdaysLookup: [
     ['nd', 'niedziela', 'sun', 'sunday', '日'],
     ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
     ['wt', 'wtorek', 'tue', 'tuesday', '火'],
