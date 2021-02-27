@@ -70,7 +70,7 @@ module.exports = {
             self.slaves[i].user.setStatus('invisible');
             continue;
           }
-          self.slaves[i].user.setStatus('available');
+          self.slaves[i].user.setStatus('online');
           let event = days[i].shift();
           let remainder = days[i].length;
           if (!self.slaves[i].user) {
