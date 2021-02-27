@@ -156,22 +156,25 @@ module.exports = {
               msg.reply('dodaned');
             }
           });
-          // cant do this anymore
-          // this.db.events.sort((ev1, ev2) => {
-          //     return ev1.date - ev2.date;
-          // });
         } 
         if (command === 'info') {
             let idx = Number(args[0]);
             if (isNaN(idx)) {
               return msg.reply('invalid index mate');
             }
-            let event = await this.db.collection('events').findOne({index: idx});
-            if (!event) {
-              return msg.reply('Event not founbd kurwa');
-            }
-            const replyEmbed = this.createEventEmbed(event);
-            msg.reply(replyEmbed);
+            // let event = await this.db.collection('events').findOne({index: idx});
+            const self = this;
+            self.db.collection('events').find({}).sort({date: -1}).limit(index + 1).toArray((err, res) => {
+              if (err) {
+                return msg.reply("couldnt find event kurła");
+              }
+              let event = await self.db.collection('events').findOne({_id: res[res.length - 1]});
+              if (!event) {
+                return msg.reply('Event not founbd kurwa');
+              }
+              const replyEmbed = this.createEventEmbed(event);
+              msg.reply(replyEmbed);
+            });
         }
         if (command === 'events') {
             if (args.length == 0) {
@@ -200,13 +203,14 @@ module.exports = {
             } else {
                 let index = Number(args[0])
                 if (!isNaN(index)) {
-                    this.db.collection('events').deleteOne({index: index}, (err, res) => {
+                    const self = this;
+                    self.db.collection('events').find({}).sort({date: -1}).limit(index + 1).toArray((err, res) => {
                       if (err) {
-                        msg.reply("couldnt delete that bad boi");
-                      } else {
-                        msg.reply("Deleted that bad boi");
+                        return msg.reply("couldnt delete that bad boi");
                       }
-                    })
+                      self.db.collection('events').deleteOne({_id: res[res.length - 1]});
+                      msg.reply("Deleted that bad boi");
+                    });
                 } else {
                     msg.reply(`${args[0]} is not a valid index`);
                 }
