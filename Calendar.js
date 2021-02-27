@@ -137,8 +137,8 @@ module.exports = {
     await this.connectToDb();
     const self = this;
     for (const token of tokens) {
-      self.loginSlave(new Discord.Client(), token).then(loggedSlave => {
-        self.slaves.push(loggedSlave);
+      this.slaves.push(new Discord.Client());
+      self.loginSlave(this.slaves[this.slaves.length - 1], token).then(loggedSlave => {
         loggedSlave.user.setActivity('work in progress', {type: 'PLAYING'});
       });
     }
