@@ -182,6 +182,7 @@ module.exports = {
                     let dateInfo = args[0].split("/");
                     let day = dateInfo[0];
                     let month = dateInfo[1] - 1;
+                    let year = new Date().getFullYear();
                     date.setFullYear(year, month, day);
                     if (date < new Date()) {
                         date.setFullYear(year + 1);
@@ -199,7 +200,7 @@ module.exports = {
             } else {
                 let index = Number(args[0])
                 if (!isNaN(index)) {
-                    this.db.collection('events').remove({index: index}, (err, res) => {
+                    this.db.collection('events').deleteOne({index: index}, (err, res) => {
                       if (err) {
                         msg.reply("couldnt delete that bad boi");
                       } else {
@@ -217,7 +218,7 @@ module.exports = {
                 .then(collected => {
                     if (collected.size === 0) return;
                     if (collected.first().content === '!y') {
-                        this.db.collection('events').remove({});
+                        this.db.collection('events').deleteMany({});
                         msg.reply("You madman, cleared all events for ya");
                     } else {
                         msg.reply("Chickening out??? Decide you fucker")
