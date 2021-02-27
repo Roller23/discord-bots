@@ -163,11 +163,11 @@ module.exports = {
               return msg.reply('invalid index mate');
             }
             const self = this;
-            self.db.collection('events').find({}).sort({date: -1}).limit(index + 1).toArray(async (err, res) => {
+            self.db.collection('events').find({}).sort({date: -1}).limit(idx + 1).toArray(async (err, res) => {
               if (err) {
                 return msg.reply("couldnt find event kurła");
               }
-              let event = await self.db.collection('events').findOne({_id: res[res.length - 1]});
+              let event = await self.db.collection('events').findOne({_id: res[res.length - 1]._id});
               if (!event) {
                 return msg.reply('Event not founbd kurwa');
               }
@@ -207,7 +207,7 @@ module.exports = {
                       if (err) {
                         return msg.reply("couldnt delete that bad boi");
                       }
-                      self.db.collection('events').deleteOne({_id: res[res.length - 1]});
+                      self.db.collection('events').deleteOne({_id: res[res.length - 1]._id});
                       msg.reply("Deleted that bad boi");
                     });
                 } else {
