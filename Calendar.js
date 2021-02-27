@@ -132,6 +132,32 @@ module.exports = {
     }
     return new Discord.MessageEmbed().setDescription(str);
   },
+  daysToWeekday(str) {
+    let weekdaysLookup = [
+      ['ndz', 'niedziela', 'sun', 'sunday', '日'],
+      ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
+      ['wt', 'wtorek', 'tue', 'tuesday', '火'],
+      ['sr', 'sroda', 'środa', 'wed', 'wednesday', '水'],
+      ['czw', 'czwartek', 'thu', 'thursday', '木'],
+      ['pt', 'piatek', 'piątek', 'fri', 'friday', '金'],
+      ['sb', 'sobota', 'sat', 'saturday', '土']
+    ];
+    let correctDay = false;
+    for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
+      if (weekdaysLookup[weekday].includes(str)) {
+        days = weekday - date.getDay();
+        if (days < 0) {
+          days += 7;
+        }
+        correctDay = true;
+        break;
+      }
+    }
+    if (!correctDay) {
+      return undefined;
+    }
+    return days;
+  },
   loginSlave(slave, token) {
     return new Promise(resolve => {
       slave.login(token);
@@ -170,6 +196,12 @@ module.exports = {
           
           if (dateInfo.length == 1) {
             let days = Number(dateInfo[0]);
+            if (isNan(days)) {
+              days = this.daysToWeekday(args[0]);
+              if (days === undefined) {
+                return msg.reply('you dont know the days of the week or smth');
+              }
+            }
             event.date.setDate(event.date.getDate() + days);
           } 
           else {
@@ -249,36 +281,11 @@ module.exports = {
                     }
                 } else {
                     let days = Number(args[0]);
-                    console.log(args[0], days, 'days test');
                     if (isNaN(days)) {
-                      let weekdaysLookup = [
-                        ['ndz', 'niedziela', 'sun', 'sunday', '日'],
-                        ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
-                        ['wt', 'wtorek', 'tue', 'tuesday', '火'],
-                        ['sr', 'sroda', 'środa', 'wed', 'wednesday', '水'],
-                        ['czw', 'czwartek', 'thu', 'thursday', '木'],
-                        ['pt', 'piatek', 'piątek', 'fri', 'friday', '金'],
-                        ['sb', 'sobota', 'sat', 'saturday', '土']
-                      ];
-                      let correctDay = false;
-                      for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
-                        if (weekdaysLookup[weekday].includes(args[0])) {
-                          days = weekday - date.getDay();
-                          if (days < 0) {
-                            days += 7;
-                          }
-                          correctDay = true;
-                          break;
-                        }
-                      }
-                      console.log('days', days);
-                      console.log('date', date);
-                      console.log('corr?', correctDay);
-                      console.log('hotel?', 'trivago');
-                      if (!correctDay) {
-                        msg.reply('You made a typo or sth?');
-                        return;
-                      }
+                      days = this.daysToWeekday(args[0]);
+                      if (days === undefined) {
+                        return msg.reply('you dont know the days of the week or smth');
+                      }                 
                     }
                     date.setDate(date.getDate() + days);
                 }
