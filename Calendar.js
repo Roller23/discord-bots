@@ -194,16 +194,16 @@ module.exports = {
           }
 
           event.name = this.replaceQuotes(args[1+argOffset]);
-          if(args[2+argOffset].startsWith("-")) {
-            event.desc = '';
-          } else {
-            event.desc = this.replaceQuotes(args[2+argOffset]);
-            argOffset++;
-          }
+          event.subject = 'others';
+          event.desc = '';
           if (typeof args[2+argOffset] === 'string') {
-            event.subject = args[2+argOffset].substring(1);
-          } else {
-            event.subject = 'others';
+            if (!args[2+argOffset].startsWith("-")) {
+              event.desc = this.replaceQuotes(args[2+argOffset]);
+              argOffset++;
+            }
+            if (typeof args[2+argOffset] === 'string') {
+              event.subject = args[2+argOffset].substring(1);
+            }
           }
           msg.channel.send(this.createEventEmbed(event));
           // msg.reply('ar ju siur abot dis?');
