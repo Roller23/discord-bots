@@ -38,7 +38,7 @@ module.exports = {
     })
   },
   setNickname(slave, name) {
-    slave.guilds.fetch(self.guildID).then(guild => {
+    slave.guilds.fetch(this.guildID).then(guild => {
       guild.me.setNickname(name);
     });
   },
