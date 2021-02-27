@@ -206,7 +206,6 @@ module.exports = {
             event.subject = args[2+argOffset].substring(1);
           }
           msg.channel.send(this.createEventEmbed(event));
-          // msg.reply('ar ju siur abot dis?');
           this.db.collection('events').insertOne(event, (err, result) => {
             if (err) {
               msg.reply('errorek ' + err.toString());
@@ -250,6 +249,32 @@ module.exports = {
                     }
                 } else {
                     let days = Number(args[0]);
+                    if (isNaN(days)) {
+                      let weekdaysLookup = [
+                        ['ndz', 'niedziela'],
+                        ['pon', 'pn', 'poniedzialek', 'poniedziałek'],
+                        ['wt', 'wtorek'],
+                        ['sr', 'sroda', 'środa'],
+                        ['czw', 'czwartek'],
+                        ['pt', 'piatek', 'piątek'],
+                        ['sb', 'sobota']
+                      ];
+                      let correctDay = false;
+                      for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
+                        if (weekdaysLookup[weekday].includes(args[0])) {
+                          days = weekday - date.getDay();
+                          if (days < 0) {
+                            days += 7;
+                          }
+                          correctDay = true;
+                          break;
+                        }
+                      }
+                      if (!correctDay) {
+                        msg.reply('You made a typo or sth?');
+                        return;
+                      }
+                    }
                     date.setDate(date.getDate() + days);
                 }
                 msg.reply(this.createListEmbed(await this.getAll('events'), date));
