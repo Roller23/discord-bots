@@ -97,7 +97,7 @@ module.exports = {
       slave.login(token);
     }
     const master = this.slaves[0];
-    master.on('message', msg => {
+    master.on('message', async msg => {
       if (msg.content.startsWith('!')) {
         let args = msg.content.substring(1).match(/[^\s"']+|"([^"]*)"/gmi);
         const command = args.shift();
