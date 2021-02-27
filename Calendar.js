@@ -37,11 +37,11 @@ module.exports = {
       });
     })
   },
-  async showCalendar() {
+  showCalendar() {
     const self = this;
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
-      this.db.collection('events').find({}).sort({date: -1}).toArray((err, res) => {
+      this.db.collection('events').find({}).sort({date: -1}).toArray(async (err, res) => {
         if (err) return console.log(err);
         let today = new Date();
         let max = new Date();
