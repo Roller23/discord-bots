@@ -11,6 +11,15 @@ class Event {
 }
 
 module.exports = {
+  weekdaysLookup = [
+    ['ndz', 'niedziela', 'sun', 'sunday', '日'],
+    ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
+    ['wt', 'wtorek', 'tue', 'tuesday', '火'],
+    ['sr', 'śr','sroda', 'środa', 'wed', 'wednesday', '水'],
+    ['czw', 'czwartek', 'thu', 'thursday', '木'],
+    ['pt', 'piatek', 'piątek', 'fri', 'friday', '金'],
+    ['sb', 'sobota', 'sat', 'saturday', '土']
+  ],
   slaves: [],
   db: null,
   guildID: '592409592315772938',
@@ -71,6 +80,7 @@ module.exports = {
           if (days[i] === undefined) {
             await self.slaves[i].user.setStatus('invisible');
             await self.setNickname(self.slaves[i], 'Calendar');
+            await self.slaves[i].user.setActivity('');
             continue;
           }
           await self.slaves[i].user.setStatus('online');
@@ -86,7 +96,7 @@ module.exports = {
           }
           const minutes = event.date.getMinutes().toString().padStart(2, '0');
           const str = `${event.date.getHours()}:${minutes} (${event.subject})${remainderStr}`;
-          self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
+          await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
         }
       });
     });
@@ -133,19 +143,10 @@ module.exports = {
     return new Discord.MessageEmbed().setDescription(str);
   },
   daysToWeekday(str) {
-    let weekdaysLookup = [
-      ['ndz', 'niedziela', 'sun', 'sunday', '日'],
-      ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
-      ['wt', 'wtorek', 'tue', 'tuesday', '火'],
-      ['sr', 'sroda', 'środa', 'wed', 'wednesday', '水'],
-      ['czw', 'czwartek', 'thu', 'thursday', '木'],
-      ['pt', 'piatek', 'piątek', 'fri', 'friday', '金'],
-      ['sb', 'sobota', 'sat', 'saturday', '土']
-    ];
     let correctDay = false;
     let date = new Date();
-    for (let weekday = 0; weekday < weekdaysLookup.length; ++weekday) {
-      if (weekdaysLookup[weekday].includes(str)) {
+    for (let weekday = 0; weekday < this.weekdaysLookup.length; ++weekday) {
+      if (this.weekdaysLookup[weekday].includes(str)) {
         days = weekday - date.getDay();
         if (days < 0) {
           days += 7;
@@ -305,7 +306,6 @@ module.exports = {
                         return msg.reply("couldnt delete that bad boi");
                       }
                       self.db.collection('events').deleteOne({_id: res[res.length - 1]._id}, (err, res) => {
-                        console.log('remove', err, res);
                         if (!err) self.showCalendar();
                       });
                       msg.reply("Deleted that bad boi");
@@ -332,7 +332,7 @@ module.exports = {
                 .catch(collected => msg.reply("Time's out mothafucka"));
         }
         if (command === 'addmeme') {
-            msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
+            msg.reply("Jesus Christ, I've added this masterpiece, but leave mspaint alone");
         }
         if (command === 'help') {
           let str = '```Here\'s a list of commands:\n';
@@ -373,7 +373,7 @@ module.exports = {
 // !remove 1
 // !clear
 
-// !addmeme KCK "http://url.jpg"
+// !addmeme "http://url.jpg" -KCK
 
 // TODO:
 // - notifications
