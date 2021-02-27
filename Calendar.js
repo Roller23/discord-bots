@@ -296,6 +296,18 @@ module.exports = {
         if (command === 'addmeme') {
             msg.reply("Jesus Christ, I've added this masterpiece, but leave paint alone");
         }
+        if (command === 'help') {
+          let str = 'Here\'s a list of commands:\n';
+          str += `!add dd/mm hh:mm "title" "description" -subject\n`;
+          str += `!events - show all events\n`;
+          str += `!events dd/mm show all events in a given day\n`;
+          str += `!info <index> - show info about a certain event\n`;
+          str += `!remove <index> - remove a certain event\n`;
+          str += `!clear - remove all events\n`;
+          str += `!help - idk\n`
+          str += `!addmeme - Ada?`;
+          msg.channel.send(str);
+        }
       }
     });
     const interval = setInterval(() => this.showCalendar(), 1000 * 60);
