@@ -311,7 +311,31 @@ module.exports = {
                       msg.reply("Deleted that bad boi");
                     });
                 } else {
-                    msg.reply(`${args[0]} is not a valid index`);
+                    let days = this.daysToWeekday(agrs[0]);
+                    if (days === undefined) {
+                      msg.reply(`${args[0]} is not a valid index`);
+                    } else {
+                      const self = this;
+                      let date = new Date();
+                      date.setDate(date.getDate() + days);
+                      self.db.collection('events').find({}).toArray((err, res) => {
+                        if (err) {
+                          return msg.reply("couldnt delete that bad boi");
+                        }
+                        for (const event of res) {
+                          if (!self.compareDate(event.date, date)) {
+                            continue;
+                          }
+                          self.db.collection('events').deleteOne({_id: event._id}, (err, res) => {
+                            if (err) {
+                              msg.reply('you are dead. not big soup rice')
+                            }
+                          });
+                        }
+                        self.showCalendar();
+                        msg.reply("Deleted those bad bois");
+                      });
+                    }
                 }
             }
         }
@@ -379,7 +403,5 @@ module.exports = {
 // - notifications
 // - memsy (url.jpg)
 // - baza subjectsów
-// - add/remove/info PON
 // - add -me ?
-// - add day hh/mm
 // - usuwanie przestarzalych / archiwum
