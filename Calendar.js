@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { readFileSync } = require('fs');
 const { writeFileSync } = require('fs');
+const { existsSync } = require('fs');
 
 class Event {
   constructor(name, desc, subject, date) {
@@ -27,6 +28,9 @@ module.exports = {
     writeFileSync(this.dbPath, JSON.stringify(this.db), {encoding: 'utf-8'});
   },
   loadDb() {
+    if (!existsSync(this.dbPath)) {
+      return writeFileSync(this.dbPath, '', {encoding: 'utf-8', flag: 'wx'});
+    }
     const json = readFileSync(this.dbPath, {encoding: 'utf-8'});
     if (json) {
       try {
