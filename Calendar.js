@@ -47,12 +47,11 @@ module.exports = {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
       this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
-        if (err) return console.log(err);
+        if (err) return console.log('err', err);
         let today = new Date();
         let max = new Date();
         max.setDate(today.getDate() + 7);
         res = res.filter(e => e.date <= max);
-        console.log('res', JSON.stringify(res));
         let days = [];
         for (const event of res) {
           for (let day = 0; day < 7; day++) {
@@ -144,7 +143,7 @@ module.exports = {
     for (const token of tokens) {
       this.slaves.push(new Discord.Client());
       self.loginSlave(this.slaves[this.slaves.length - 1], token).then(loggedSlave => {
-        console.log('slave loggged', loggedSlave);
+        console.log('slave loggged');
       });
     }
     const master = this.slaves[0];
