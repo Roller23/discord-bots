@@ -201,9 +201,9 @@ module.exports = {
               event.desc = this.replaceQuotes(args[2+argOffset]);
               argOffset++;
             }
-            if (typeof args[2+argOffset] === 'string') {
-              event.subject = args[2+argOffset].substring(1);
-            }
+          }
+          if (typeof args[2+argOffset] === 'string') {
+            event.subject = args[2+argOffset].substring(1);
           }
           msg.channel.send(this.createEventEmbed(event));
           // msg.reply('ar ju siur abot dis?');
