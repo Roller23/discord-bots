@@ -62,7 +62,9 @@ module.exports = {
         }
         for (let i = 0; i < 7; i++) {
           if (days[i] === undefined) {
-            self.slaves[i].destroy();
+            if (self.slaves[i].user) {
+              self.slaves[i].destroy();
+            }
             continue;
           }
           let event = days[i].shift();
@@ -139,7 +141,8 @@ module.exports = {
     for (const token of tokens) {
       this.slaves.push(new Discord.Client());
       self.loginSlave(this.slaves[this.slaves.length - 1], token).then(loggedSlave => {
-        loggedSlave.user.setActivity('work in progress', {type: 'PLAYING'});
+        // loggedSlave.user.setActivity('work in progress', {type: 'PLAYING'});
+        console.log('slave loggged');
       });
     }
     const master = this.slaves[0];
@@ -200,6 +203,7 @@ module.exports = {
               msg.reply('errorek ' + err.toString());
             } else {
               msg.reply('dodaned');
+              self.showCalendar();
             }
           });
         } 
