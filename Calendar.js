@@ -16,7 +16,6 @@ module.exports = {
   guildID: '592409592315772938',
   connectToDb() {
     const uri = `mongodb+srv://domopedia:${process.env.MONGO_PASSWORD}@bots-cluster.k06nu.mongodb.net/domopedia?retryWrites=true&w=majority`;
-    console.log('pw', process.env.MONGO_PASSWORD);
     const self = this;
     self.client = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
     return new Promise((resolve, reject) => {
