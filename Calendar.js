@@ -22,7 +22,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       self.client.connect(err => {
         if (err) reject(err);
-        self.db = self.client.db('main-db');
+        self.db = self.client.db('domopedia');
         self.db.collection('events').createIndex({index: 1});
         resolve(self.db);
       });
