@@ -77,7 +77,7 @@ module.exports = {
           if (remainder) {
             remainderStr ` [+${remainder}]`;
           }
-          const str = `${event.date.getHour()}:${event.date.getMinutes()} (${event.subject}) ${remainderStr}`;
+          const str = `${event.date.getHour()}:${event.date.getMinutes()} (${event.subject})${remainderStr}`;
           self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
         }
       });
