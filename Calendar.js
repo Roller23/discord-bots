@@ -14,6 +14,7 @@ module.exports = {
   slaves: [],
   db: null,
   guildID: '592409592315772938',
+  tokens = [],
   connectToDb() {
     const uri = `mongodb+srv://domopedia:${process.env.MONGO_PASSWORD}@bots-cluster.k06nu.mongodb.net/domopedia?retryWrites=true&w=majority`;
     const self = this;
@@ -36,11 +37,49 @@ module.exports = {
       });
     })
   },
-  showCalendar() {
+  async showCalendar() {
+    const self = this;
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
-      slave.guilds.fetch(this.guildID).then(guild => {
-        guild.me.setNickname(`day ${idx + 1}`);
+      this.db.collection('events').find({}).sort({date: -1}).toArray((err, res) => {
+        if (err) return console.log(err);
+        let today = new Date();
+        let max = new Date();
+        max.setDate(today.getDate() + 7);
+        res = res.filter(e => e.date <= max);
+        console.log('res', JSON.stringify(res));
+        let days = [];
+        for (const event of res) {
+          for (let day = 0; day < 7; day++) {
+            if (event.date.getDay() === day) {
+              if (days[day] === undefined) {
+                days[day] = [];
+              }
+              days[day].push(event);
+              break;
+            }
+          }
+        }
+        for (let i = 0; i < 7; i++) {
+          if (days[i] === undefined) {
+            self.slaves[i].destroy();
+            continue;
+          }
+          let event = days[i].shift();
+          let remainder = days[i].length;
+          if (!self.slaves[i].user) {
+            await self.loginSlave(self.slaves[i], self.tokens[i]);
+          }
+          self.slaves[i].guilds.fetch(self.guildID).then(guild => {
+            guild.me.setNickname(event.name);
+          });
+          let remainderStr = '';
+          if (remainder) {
+            remainderStr ` [+${remainder}]`;
+          }
+          const str = `${event.date.getHour()}:${event.date.getMinutes()} (${event.subject}) ${remainderStr}`;
+          self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
+        }
       });
     });
   },
@@ -85,16 +124,23 @@ module.exports = {
     }
     return new Discord.MessageEmbed().setDescription(str);
   },
-  async run(tokens) {
-    await this.connectToDb();
-    for (const token of tokens) {
-      const slave = new Discord.Client();
-      this.slaves.push(slave);
-      slave.on('ready', () => {
-        console.log(`Slave added ${slave.user.tag}!`);
-        slave.user.setActivity('work in progress', {type: 'PLAYING'});
-      })
+  loginSlave(slave, token) {
+    return new Promise(resolve => {
       slave.login(token);
+      slave.on('ready', () => {
+        resolve(slave);
+      });
+    });
+  },
+  async run(tokens) {
+    this.tokens = tokens;
+    await this.connectToDb();
+    const self = this;
+    for (const token of tokens) {
+      self.loginSlave(new Discord.Client(), token).then(loggedSlave => {
+        self.slaves.push(loggedSlave);
+        loggedSlave.user.setActivity('work in progress', {type: 'PLAYING'});
+      });
     }
     const master = this.slaves[0];
     master.on('message', async msg => {
