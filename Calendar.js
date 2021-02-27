@@ -20,7 +20,7 @@ module.exports = {
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
       slave.guilds.fetch('592409592315772938').then(guild => {
-        guild.me.setNickname(`slave ${idx + 1}`);
+        guild.me.setNickname(`day ${idx + 1}`);
       });
     });
   },
