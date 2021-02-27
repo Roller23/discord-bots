@@ -12,7 +12,7 @@ class Event {
 
 module.exports = {
   weekdaysLookup = [
-    ['ndz', 'niedziela', 'sun', 'sunday', '日'],
+    ['nd', 'niedziela', 'sun', 'sunday', '日'],
     ['pon', 'pn', 'poniedzialek', 'poniedziałek', 'mon', 'monday', '月'],
     ['wt', 'wtorek', 'tue', 'tuesday', '火'],
     ['sr', 'śr','sroda', 'środa', 'wed', 'wednesday', '水'],
@@ -182,6 +182,9 @@ module.exports = {
     master.on('message', async msg => {
       if (msg.content.startsWith('!')) {
         let args = msg.content.substring(1).match(/[^\s"']+|"([^"]*)"/gmi);
+        if (args === null) {
+          args = [''];
+        }
         const command = args.shift();
         if (command === 'add') {
           if (args.length === 0) {
@@ -311,9 +314,9 @@ module.exports = {
                       msg.reply("Deleted that bad boi");
                     });
                 } else {
-                    let days = this.daysToWeekday(agrs[0]);
+                    let days = this.daysToWeekday(args[0]);
                     if (days === undefined) {
-                      msg.reply(`${args[0]} is not a valid index`);
+                      return msg.reply(`${args[0]} is not a valid index`);
                     } else {
                       const self = this;
                       let date = new Date();
