@@ -31,7 +31,7 @@ module.exports = {
   getAll(collection) {
     const self = this;
     return new Promise((resolve, reject) => {
-      self.db.collection(collection).find({}).sort({date: -1}).toArray((err, result) => {
+      self.db.collection(collection).find({}).sort({date: 1}).toArray((err, result) => {
         if (err) reject(err);
         resolve(result);
       });
@@ -41,7 +41,7 @@ module.exports = {
     const self = this;
     this.slaves.forEach((slave, idx) => {
       if (!slave.user) return;
-      this.db.collection('events').find({}).sort({date: -1}).toArray(async (err, res) => {
+      this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
         if (err) return console.log(err);
         let today = new Date();
         let max = new Date();
@@ -213,7 +213,7 @@ module.exports = {
               return msg.reply('invalid index mate');
             }
             const self = this;
-            self.db.collection('events').find({}).sort({date: -1}).limit(idx + 1).toArray(async (err, res) => {
+            self.db.collection('events').find({}).sort({date: 1}).limit(idx + 1).toArray(async (err, res) => {
               if (err) {
                 return msg.reply("couldnt find event kurła");
               }
@@ -253,7 +253,7 @@ module.exports = {
                 let index = Number(args[0])
                 if (!isNaN(index)) {
                     const self = this;
-                    self.db.collection('events').find({}).sort({date: -1}).limit(index + 1).toArray((err, res) => {
+                    self.db.collection('events').find({}).sort({date: 1}).limit(index + 1).toArray((err, res) => {
                       if (err) {
                         return msg.reply("couldnt delete that bad boi");
                       }
