@@ -5,6 +5,5 @@ all:
 
 push:
 	git add .
-	git reset -- database.json
 	git commit -m "$(m)"
 	git push
