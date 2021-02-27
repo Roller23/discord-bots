@@ -64,6 +64,7 @@ module.exports = {
           if (days[i] === undefined) {
             if (self.slaves[i].user) {
               self.slaves[i].destroy();
+              self.slaves[i].user = null;
             }
             continue;
           }
@@ -262,6 +263,7 @@ module.exports = {
                         return msg.reply("couldnt delete that bad boi");
                       }
                       self.db.collection('events').deleteOne({_id: res[res.length - 1]._id}, (err, res) => {
+                        console.log('remove', err, res);
                         if (!err) self.showCalendar();
                       });
                       msg.reply("Deleted that bad boi");
@@ -324,3 +326,4 @@ module.exports = {
 // - memsy (url.jpg)
 // - baza subjectsów
 // - add/remove/info PON
+// - add -me ?
