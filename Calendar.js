@@ -31,7 +31,7 @@ module.exports = {
   getAll(collection) {
     const self = this;
     return new Promise((resolve, reject) => {
-      self.db.collection(collection).find({}).toArray((err, result) => {
+      self.db.collection(collection).find({}).sort({date: -1}).toArray((err, result) => {
         if (err) reject(err);
         resolve(result);
       });
@@ -317,7 +317,6 @@ module.exports = {
 
 // TODO:
 // - notifications
-// - changing nicknames
-// - memsy
+// - memsy (url.jpg)
 // - baza subjectsów
-// - url.jpg"
+// - add/remove/info PON
