@@ -76,7 +76,10 @@ module.exports = {
       let today = new Date();
       let max = new Date();
       max.setDate(today.getDate() + 7);
-      let toRemove = res.filter(e => console.log('check', e.date, today), (e.date < today));
+      let toRemove = res.filter(e => {
+        console.log('check', e.date, today)
+        return e.date < today;
+      });
       console.log('to remve', toRemove);
       toRemove.forEach(ev => {
         const id = ev._id;
