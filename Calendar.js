@@ -70,74 +70,75 @@ module.exports = {
     });
   },
   showCalendar() {
+    // this.slaves.forEach((slave, idx) => {
+    //   if (!slave.user) return;
+      
+    // });
     const self = this;
-    this.slaves.forEach((slave, idx) => {
-      if (!slave.user) return;
-      this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
-        if (err) return console.log('err', err);
-        let today = new Date();
-        let max = new Date();
-        max.setDate(today.getDate() + 7);
-        res = res.filter(e => e.date >= today && e.date <= max);
-        let days = [];
-        for (const event of res) {
-          for (let day = 0; day < 7; day++) {
-            if (event.date.getDay() === day) {
-              if (days[day] === undefined) {
-                days[day] = [];
-              }
-              days[day].push(event);
-              break;
+    this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
+      if (err) return console.log('err', err);
+      let today = new Date();
+      let max = new Date();
+      max.setDate(today.getDate() + 7);
+      res = res.filter(e => e.date >= today && e.date <= max);
+      let days = [];
+      for (const event of res) {
+        for (let day = 0; day < 7; day++) {
+          if (event.date.getDay() === day) {
+            if (days[day] === undefined) {
+              days[day] = [];
             }
+            days[day].push(event);
+            break;
           }
         }
-        console.log('start')
-        for (let i = 0; i < 7; i++) {
-          console.log('i', i)
-          if (days[i] === undefined) {
-            await self.slaves[i].user.setStatus('invisible');
-            await self.setNickname(self.slaves[i], 'Calendar');
-            await self.slaves[i].user.setActivity('');
-            continue;
-          }
-          await self.slaves[i].user.setStatus('online');
-          let shallowCopy = days[i].slice(0);
-          console.log('copy', shallowCopy.length)
-          let event = days[i].shift();
-          let remainder = days[i].length;
-          if (!self.slaves[i].user) {
-            await self.loginSlave(self.slaves[i], self.tokens[i]);
-          }
-          self.setNickname(self.slaves[i], event.name);
-          let remainderStr = '';
-          if (remainder) {
-            remainderStr = ` [+${remainder}]`;
-          }
-          const minutes = event.date.getMinutes().toString().padStart(2, '0');
-          const str = `${event.date.getHours()}:${minutes} (${event.subject})${remainderStr}`;
-          await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
-          for (const event of shallowCopy) {
-            if (event.notifiedDayBefore && event.notifiedHourBefore) continue;
-            let today = new Date();
-            today.setMilliseconds(event.date.getMilliseconds());
-            let tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            let minutesPassed = Math.floor((tomorrow.getTime() - event.date.getTime()) / 1000 / 60);
-            let hoursPassed = Math.floor(minutesPassed / 60);
-            console.log(event.name, 'minutes', minutesPassed, 'hours', hoursPassed);
-            if (!event.notifiedDayBefore && hoursPassed === -1) {
-              let guild = await self.getGuild(self.slaves[i]);
-              let channel = guild.channels.cache.get(self.channelID);
-              channel.send(`@everyone wakey wakey`);
-              channel.send(self.createEventEmbed(event));
-              self.db.collection('events').updateOne({_id: event._id}, {
-                $set: {notifiedDayBefore: true}
-              });
-              event.notifiedDayBefore = true;
-            }
+      }
+      console.log('start')
+      for (let i = 0; i < 7; i++) {
+        console.log('i', i)
+        if (days[i] === undefined) {
+          await self.slaves[i].user.setStatus('invisible');
+          await self.setNickname(self.slaves[i], 'Calendar');
+          await self.slaves[i].user.setActivity('');
+          continue;
+        }
+        await self.slaves[i].user.setStatus('online');
+        let shallowCopy = days[i].slice(0);
+        console.log('copy', shallowCopy.length)
+        let event = days[i].shift();
+        let remainder = days[i].length;
+        if (!self.slaves[i].user) {
+          await self.loginSlave(self.slaves[i], self.tokens[i]);
+        }
+        self.setNickname(self.slaves[i], event.name);
+        let remainderStr = '';
+        if (remainder) {
+          remainderStr = ` [+${remainder}]`;
+        }
+        const minutes = event.date.getMinutes().toString().padStart(2, '0');
+        const str = `${event.date.getHours()}:${minutes} (${event.subject})${remainderStr}`;
+        await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
+        for (const event of shallowCopy) {
+          if (event.notifiedDayBefore && event.notifiedHourBefore) continue;
+          let today = new Date();
+          today.setMilliseconds(event.date.getMilliseconds());
+          let tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          let minutesPassed = Math.floor((tomorrow.getTime() - event.date.getTime()) / 1000 / 60);
+          let hoursPassed = Math.floor(minutesPassed / 60);
+          console.log(event.name, 'minutes', minutesPassed, 'hours', hoursPassed);
+          if (!event.notifiedDayBefore && hoursPassed === -1) {
+            let guild = await self.getGuild(self.slaves[i]);
+            let channel = guild.channels.cache.get(self.channelID);
+            channel.send(`wakey wakey`);
+            channel.send(self.createEventEmbed(event));
+            self.db.collection('events').updateOne({_id: event._id}, {
+              $set: {notifiedDayBefore: true}
+            });
+            event.notifiedDayBefore = true;
           }
         }
-      });
+      }
     });
   },
   replaceQuotes(str) {
