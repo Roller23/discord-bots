@@ -74,12 +74,10 @@ module.exports = {
     this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
       if (err) return console.log('err', err);
       let today = new Date();
-      let realToday = new Date(today);
-      realToday.setHours(realToday.getHours() + 1);
+      today.setHours(today.getHours() + 1);
       let max = new Date();
       max.setDate(today.getDate() + 7);
-      let toRemove = res.filter(e => e.date < realToday);
-      console.log('to remve', toRemove);
+      let toRemove = res.filter(e => e.date < today);
       toRemove.forEach(ev => {
         const id = ev._id;
         delete ev._id;
@@ -124,13 +122,12 @@ module.exports = {
         await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
         for (const event of shallowCopy) {
           if (event.notifiedDayBefore && event.notifiedHourBefore) continue;
-          let today = new Date();
           let minutesPassed = Math.floor((today.getTime() - event.date.getTime()) / 1000 / 60);
           let hoursPassed = Math.floor(minutesPassed / 60);
-          const shouldNotify = (hoursPassed === -25 && !event.notifiedDayBefore) || (hoursPassed === -2 && !event.notifiedHourBefore);
+          const shouldNotify = (hoursPassed === -24 && !event.notifiedDayBefore) || (hoursPassed === -1 && !event.notifiedHourBefore);
           if (!shouldNotify) continue;
-          event.notifiedDayBefore = hoursPassed === -25;
-          event.notifiedHourBefore = hoursPassed === -2;
+          event.notifiedDayBefore = hoursPassed === -24;
+          event.notifiedHourBefore = hoursPassed === -1;
           let guild = await self.getGuild(self.slaves[i]);
           let channel = guild.channels.cache.get(self.channelID);
           channel.send(`wakey wakey`);
