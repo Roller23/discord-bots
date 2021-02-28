@@ -121,21 +121,25 @@ module.exports = {
         for (const event of shallowCopy) {
           if (event.notifiedDayBefore && event.notifiedHourBefore) continue;
           let today = new Date();
-          today.setMilliseconds(event.date.getMilliseconds());
-          let tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          let minutesPassed = Math.floor((tomorrow.getTime() - event.date.getTime()) / 1000 / 60);
+          let minutesPassed = Math.floor((today.getTime() - event.date.getTime()) / 1000 / 60);
           let hoursPassed = Math.floor(minutesPassed / 60);
-          console.log(event.name, 'minutes', minutesPassed, 'hours', hoursPassed);
-          if (!event.notifiedDayBefore && hoursPassed === -1) {
+          if (!event.notifiedDayBefore || !event.notifiedHourBefore) {
+            if (hoursPassed === 23) {
+              event.notifiedDayBefore = true;
+            }
+            if (hoursPassed === 0) {
+              event.notifiedHourBefore = true;
+            }
             let guild = await self.getGuild(self.slaves[i]);
             let channel = guild.channels.cache.get(self.channelID);
             channel.send(`wakey wakey`);
             channel.send(self.createEventEmbed(event));
             self.db.collection('events').updateOne({_id: event._id}, {
-              $set: {notifiedDayBefore: true}
+              $set: {
+                notifiedDayBefore: !!event.notifiedDayBefore,
+                notifiedHourBefore: !!event.notifiedHourBefore
+              }
             });
-            event.notifiedDayBefore = true;
           }
         }
       }
