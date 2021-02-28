@@ -123,8 +123,10 @@ module.exports = {
           let today = new Date();
           let minutesPassed = Math.floor((today.getTime() - event.date.getTime()) / 1000 / 60);
           let hoursPassed = Math.floor(minutesPassed / 60);
+          console.log(event.name, minutesPassed, hoursPassed);
           const shouldNotify = hoursPassed === 23 || hoursPassed === 0;
           if (!shouldNotify) continue;
+          console.log('should notify');
           event.notifiedDayBefore = hoursPassed === 23;
           event.notifiedHourBefore = hoursPassed === 0;
           let guild = await self.getGuild(self.slaves[i]);
@@ -269,7 +271,9 @@ module.exports = {
             event.date.setMinutes(timeInfo[1]);
             event.date.setSeconds(0);
           }
-
+          if (args[1+argOffset] === undefined) {
+            return msg.reply('Giv mor data');
+          }
           event.name = this.replaceQuotes(args[1+argOffset]);
           event.subject = 'others';
           event.desc = '';
