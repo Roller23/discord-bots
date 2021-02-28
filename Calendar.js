@@ -2,10 +2,10 @@ const Discord = require('discord.js');
 const MongoClient = require('mongodb').MongoClient;
 
 class Event {
-  constructor(name, desc, subject, date) {
+  constructor(name, desc, group, date) {
     this.name = name;
     this.desc = desc;
-    this.subject = subject;
+    this.group = group;
     this.date = date;
     this.notifiedDayBefore = false;
     this.notifiedHourBefore = false;
@@ -22,6 +22,16 @@ module.exports = {
     ['pt', 'piatek', 'piątek', 'fri', 'friday', '金'],
     ['sb', 'sobota', 'sat', 'saturday', '土']
   ],
+  groupsLookup: {
+   "TM2": {name: 'Technologie mobilne gr. 2 (8:00 x1)', role: '@TM2'},
+   "TM3": {name: 'Technologie mobilne gr. 3 (10:00 x1 W)', role: '@TM3'},
+   "TM4": {name: 'Technologie mobilne gr. 4 (10:00 x1 M)', role: '@TM4'},
+   "PG": {name: 'Programowanie gier', role: '@PG'},
+   "ZPS": {name: 'Zaawansowane programowanie sieciowe', role: '@ZPS'},
+   "SCR": {name: 'Systemy czasu rzeczywistego', role: '@SCR'},
+   "ALL": {name: 'Cała grupa', role: '@everyone'},
+   "TEST": {name: 'Test', role: '@BotTest'},
+  },
   slaves: [],
   db: null,
   guildID: '592409592315772938',
@@ -118,7 +128,7 @@ module.exports = {
           remainderStr = ` [+${remainder}]`;
         }
         const minutes = event.date.getMinutes().toString().padStart(2, '0');
-        const str = `${event.date.getHours()}:${minutes} (${event.subject})${remainderStr}`;
+        const str = `${event.date.getHours()}:${minutes} (${event.group})${remainderStr}`;
         await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
         for (const event of shallowCopy) {
           if (event.notifiedDayBefore && event.notifiedHourBefore) continue;
@@ -155,11 +165,11 @@ module.exports = {
               .setURL('https://omfgdogs.com')
               .setDescription(event.desc)
               .setThumbnail('https://cdn.discordapp.com/attachments/718121700163715164/814954240534380584/unknown.png')
-              .addField('Subject', event.subject)
+              .addField('Group', event.group)
               .addField('Date', event.date.toLocaleString("pl-PL"));
   },
   createListEmbedEl(event, idx) {
-    return "["+idx+"] "+event.name+" ("+event.date.toLocaleString("pl-PL")+") ("+event.subject+")";
+    return "["+idx+"] "+event.name+" ("+event.date.toLocaleString("pl-PL")+") ("+event.group+")";
   },
   compareDate(eventDate, date) {
     return eventDate.getFullYear() === date.getFullYear() &&
@@ -274,7 +284,7 @@ module.exports = {
             return msg.reply('Giv mor data');
           }
           event.name = this.replaceQuotes(args[1+argOffset]);
-          event.subject = 'others';
+          event.group = 'others';
           event.desc = '';
           if (typeof args[2+argOffset] === 'string') {
             if (!args[2+argOffset].startsWith("-")) {
@@ -283,7 +293,7 @@ module.exports = {
             }
           }
           if (typeof args[2+argOffset] === 'string') {
-            event.subject = args[2+argOffset].substring(1);
+            event.group = args[2+argOffset].substring(1).toUpperCase();
           }
           msg.channel.send(this.createEventEmbed(event));
           this.db.collection('events').insertOne(event, (err, result) => {
