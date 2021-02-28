@@ -7,6 +7,8 @@ class Event {
     this.desc = desc;
     this.subject = subject;
     this.date = date;
+    this.notifiedDayBefore = false;
+    this.notifiedHourBefore = false;
   }
 }
 
@@ -23,6 +25,8 @@ module.exports = {
   slaves: [],
   db: null,
   guildID: '592409592315772938',
+  channelID: '815371586769125437',
+  guild: null,
   tokens: [],
   connectToDb() {
     const uri = `mongodb+srv://domopedia:${process.env.MONGO_PASSWORD}@bots-cluster.k06nu.mongodb.net/domopedia?retryWrites=true&w=majority`;
@@ -45,6 +49,17 @@ module.exports = {
         resolve(result);
       });
     })
+  },
+  getGuild(slave) {
+    const self = this;
+    return new Promise(resolve => {
+      if (this.guild) {
+        resolve(this.guild);
+      }
+      slave.guilds.fetch(self.guildID).then(guild => {
+        resolve(guild);
+      });
+    });
   },
   setNickname(slave, name) {
     return new Promise(resolve => {
@@ -84,6 +99,7 @@ module.exports = {
             continue;
           }
           await self.slaves[i].user.setStatus('online');
+          let shallowCopy = days[i].slice(0);
           let event = days[i].shift();
           let remainder = days[i].length;
           if (!self.slaves[i].user) {
@@ -97,6 +113,24 @@ module.exports = {
           const minutes = event.date.getMinutes().toString().padStart(2, '0');
           const str = `${event.date.getHours()}:${minutes} (${event.subject})${remainderStr}`;
           await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
+          for (const event of shallowCopy) {
+            if (event.notifiedDayBefore && event.notifiedHourBefore) continue;
+            let today = new Date();
+            today.setMilliseconds(event.date.getMilliseconds());
+            let tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            let minutesPassed = Math.floor((tomorrow.getTime() - event.date.getTime()) / 1000 / 60);
+            let hoursPassed = Math.floor(minutesPassed / 60);
+            if (!event.notifiedDayBefore && hoursPassed === 23) {
+              let guild = self.getGuild(self.slaves[i]);
+              let channel = guild.channels.cache.get(self.channelID);
+              channel.send(`@everyone wakey wakey: ${self.createEventEmbed(event)}`);
+              self.db.collection('events').updateOne({_id: event._id}, {
+                $set: {notifiedDayBefore: true}
+              });
+              event.notifiedDayBefore = true;
+            }
+          }
         }
       });
     });
