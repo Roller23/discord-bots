@@ -121,7 +121,7 @@ module.exports = {
             tomorrow.setDate(tomorrow.getDate() + 1);
             let minutesPassed = Math.floor((tomorrow.getTime() - event.date.getTime()) / 1000 / 60);
             let hoursPassed = Math.floor(minutesPassed / 60);
-            console.log('minutes', minutesPassed, 'hours', hoursPassed);
+            console.log(event.name, 'minutes', minutesPassed, 'hours', hoursPassed);
             if (!event.notifiedDayBefore && hoursPassed === 23) {
               console.log('notifying')
               let guild = self.getGuild(self.slaves[i]);
