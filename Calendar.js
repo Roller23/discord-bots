@@ -122,7 +122,7 @@ module.exports = {
             let minutesPassed = Math.floor((tomorrow.getTime() - event.date.getTime()) / 1000 / 60);
             let hoursPassed = Math.floor(minutesPassed / 60);
             console.log(event.name, 'minutes', minutesPassed, 'hours', hoursPassed);
-            if (!event.notifiedDayBefore && hoursPassed === 23) {
+            if (!event.notifiedDayBefore && hoursPassed === -1) {
               console.log('notifying')
               let guild = self.getGuild(self.slaves[i]);
               let channel = guild.channels.cache.get(self.channelID);
