@@ -139,7 +139,9 @@ module.exports = {
           event.notifiedHourBefore = hoursPassed === -1;
           let guild = await self.getGuild(self.slaves[i]);
           let channel = guild.channels.cache.get(self.channelID);
-          channel.send(`<@&815685834686332960> wakey wakey`);
+          let role = self.groupsLookup[event.group] ? self.groupsLookup[event.group].role + ' ' : '';
+          let when = hoursPassed === -1 ? 'in an hour' : 'tomorrow';
+          channel.send(`${role}${when}`);
           channel.send(self.createEventEmbed(event));
           self.db.collection('events').updateOne({_id: event._id}, {
             $set: {
