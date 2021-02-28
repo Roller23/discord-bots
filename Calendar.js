@@ -86,6 +86,7 @@ module.exports = {
       let today = new Date();
       today.setHours(today.getHours() + 1);
       let max = new Date();
+      max.setHours(max.getHours() + 1);
       max.setDate(today.getDate() + 7);
       let toRemove = res.filter(e => e.date < today);
       toRemove.forEach(ev => {
