@@ -123,8 +123,7 @@ module.exports = {
             let hoursPassed = Math.floor(minutesPassed / 60);
             console.log(event.name, 'minutes', minutesPassed, 'hours', hoursPassed);
             if (!event.notifiedDayBefore && hoursPassed === -1) {
-              console.log('notifying')
-              let guild = self.getGuild(self.slaves[i]);
+              let guild = await self.getGuild(self.slaves[i]);
               let channel = guild.channels.cache.get(self.channelID);
               channel.send(`@everyone wakey wakey: ${self.createEventEmbed(event)}`);
               self.db.collection('events').updateOne({_id: event._id}, {
