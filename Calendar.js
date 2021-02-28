@@ -123,21 +123,17 @@ module.exports = {
           let today = new Date();
           let minutesPassed = Math.floor((today.getTime() - event.date.getTime()) / 1000 / 60);
           let hoursPassed = Math.floor(minutesPassed / 60);
-          if (!event.notifiedDayBefore || !event.notifiedHourBefore) {
-            if (hoursPassed === 23) {
-              event.notifiedDayBefore = true;
-            }
-            if (hoursPassed === 0) {
-              event.notifiedHourBefore = true;
-            }
+          if (event.notifiedDayBefore === false || event.notifiedHourBefore === false) {
+            event.notifiedDayBefore = hoursPassed === 23;
+            event.notifiedHourBefore = hoursPassed === 0;
             let guild = await self.getGuild(self.slaves[i]);
             let channel = guild.channels.cache.get(self.channelID);
             channel.send(`wakey wakey`);
             channel.send(self.createEventEmbed(event));
             self.db.collection('events').updateOne({_id: event._id}, {
               $set: {
-                notifiedDayBefore: !!event.notifiedDayBefore,
-                notifiedHourBefore: !!event.notifiedHourBefore
+                notifiedDayBefore: event.notifiedDayBefore,
+                notifiedHourBefore: event.notifiedHourBefore
               }
             });
           }
