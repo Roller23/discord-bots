@@ -91,7 +91,9 @@ module.exports = {
             }
           }
         }
+        console.log('start')
         for (let i = 0; i < 7; i++) {
+          console.log('i', i)
           if (days[i] === undefined) {
             await self.slaves[i].user.setStatus('invisible');
             await self.setNickname(self.slaves[i], 'Calendar');
@@ -100,7 +102,7 @@ module.exports = {
           }
           await self.slaves[i].user.setStatus('online');
           let shallowCopy = days[i].slice(0);
-          console.log('copy', shallowCopy)
+          console.log('copy', shallowCopy.length)
           let event = days[i].shift();
           let remainder = days[i].length;
           if (!self.slaves[i].user) {
