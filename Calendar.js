@@ -77,8 +77,9 @@ module.exports = {
       let max = new Date();
       max.setDate(today.getDate() + 7);
       let toRemove = res.filter(e => e.date < today);
+      console.log('to remve', toRemove);
       toRemove.forEach(ev => {
-        let id = ev._id;
+        const id = ev._id;
         delete ev._id;
         self.db.collection('archivedEvents').insertOne(ev);
         self.db.collection('events').deleteOne({_id: id});
