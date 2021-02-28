@@ -70,16 +70,19 @@ module.exports = {
     });
   },
   showCalendar() {
-    // this.slaves.forEach((slave, idx) => {
-    //   if (!slave.user) return;
-      
-    // });
     const self = this;
     this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
       if (err) return console.log('err', err);
       let today = new Date();
       let max = new Date();
       max.setDate(today.getDate() + 7);
+      let toRemove = res.filter(e => e.date < today);
+      toRemove.forEach(ev => {
+        let id = ev._id;
+        delete ev._id;
+        self.db.collection('archivedEvents').insertOne(ev);
+        self.db.collection('events').deleteOne({_id: id});
+      });
       res = res.filter(e => e.date >= today && e.date <= max);
       let days = [];
       for (const event of res) {
@@ -93,9 +96,7 @@ module.exports = {
           }
         }
       }
-      console.log('start')
       for (let i = 0; i < 7; i++) {
-        console.log('i', i)
         if (days[i] === undefined) {
           await self.slaves[i].user.setStatus('invisible');
           await self.setNickname(self.slaves[i], 'Calendar');
