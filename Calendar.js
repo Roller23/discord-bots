@@ -100,6 +100,7 @@ module.exports = {
           }
           await self.slaves[i].user.setStatus('online');
           let shallowCopy = days[i].slice(0);
+          console.log('copy', shallowCopy)
           let event = days[i].shift();
           let remainder = days[i].length;
           if (!self.slaves[i].user) {
@@ -125,7 +126,8 @@ module.exports = {
             if (!event.notifiedDayBefore && hoursPassed === -1) {
               let guild = await self.getGuild(self.slaves[i]);
               let channel = guild.channels.cache.get(self.channelID);
-              channel.send(`@everyone wakey wakey: ${self.createEventEmbed(event)}`);
+              channel.send(`@everyone wakey wakey`);
+              channel.send(self.createEventEmbed(event));
               self.db.collection('events').updateOne({_id: event._id}, {
                 $set: {notifiedDayBefore: true}
               });
