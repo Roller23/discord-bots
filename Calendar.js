@@ -141,7 +141,7 @@ module.exports = {
           let channel = guild.channels.cache.get(self.channelID);
           let role = self.groupsLookup[event.group] ? self.groupsLookup[event.group].role + ' ' : '';
           let when = hoursPassed === -1 ? 'in an hour' : 'tomorrow';
-          channel.send(`${role}${when}`);
+          channel.send(`${role}The following event will happen ${when}`);
           channel.send(self.createEventEmbed(event));
           self.db.collection('events').updateOne({_id: event._id}, {
             $set: {
