@@ -139,7 +139,7 @@ module.exports = {
           event.notifiedHourBefore = hoursPassed === -1;
           let guild = await self.getGuild(self.slaves[i]);
           let channel = guild.channels.cache.get(self.channelID);
-          channel.send(`<@&BotTest> wakey wakey`);
+          channel.send(`<@&815685834686332960> wakey wakey`);
           channel.send(self.createEventEmbed(event));
           self.db.collection('events').updateOne({_id: event._id}, {
             $set: {
