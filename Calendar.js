@@ -74,12 +74,11 @@ module.exports = {
     this.db.collection('events').find({}).sort({date: 1}).toArray(async (err, res) => {
       if (err) return console.log('err', err);
       let today = new Date();
+      let realToday = new Date(today);
+      realToday.setHours(realToday.getHours() + 1);
       let max = new Date();
       max.setDate(today.getDate() + 7);
-      let toRemove = res.filter(e => {
-        console.log('check', e.date, today)
-        return e.date < today;
-      });
+      let toRemove = res.filter(e => e.date < realToday);
       console.log('to remve', toRemove);
       toRemove.forEach(ev => {
         const id = ev._id;
