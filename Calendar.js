@@ -116,7 +116,6 @@ module.exports = {
         }
         await self.slaves[i].user.setStatus('online');
         let shallowCopy = days[i].slice(0);
-        console.log('copy', shallowCopy.length)
         let event = days[i].shift();
         let remainder = days[i].length;
         if (!self.slaves[i].user) {
@@ -140,7 +139,7 @@ module.exports = {
           event.notifiedHourBefore = hoursPassed === -1;
           let guild = await self.getGuild(self.slaves[i]);
           let channel = guild.channels.cache.get(self.channelID);
-          channel.send(`wakey wakey`);
+          channel.send(`@BotTest wakey wakey`);
           channel.send(self.createEventEmbed(event));
           self.db.collection('events').updateOne({_id: event._id}, {
             $set: {
@@ -284,7 +283,7 @@ module.exports = {
             return msg.reply('Giv mor data');
           }
           event.name = this.replaceQuotes(args[1+argOffset]);
-          event.group = 'others';
+          event.group = 'None';
           event.desc = '';
           if (typeof args[2+argOffset] === 'string') {
             if (!args[2+argOffset].startsWith("-")) {
