@@ -122,10 +122,7 @@ module.exports = {
           await self.loginSlave(self.slaves[i], self.tokens[i]);
         }
         self.setNickname(self.slaves[i], event.name);
-        let remainderStr = '';
-        if (remainder) {
-          remainderStr = ` [+${remainder}]`;
-        }
+        let remainderStr = remainder ? ` [+${remainder}]` : '';
         const minutes = event.date.getMinutes().toString().padStart(2, '0');
         const str = `${event.date.getHours()}:${minutes} (${event.group})${remainderStr}`;
         await self.slaves[i].user.setActivity(str, {type: 'PLAYING'});
@@ -363,9 +360,11 @@ module.exports = {
                         return msg.reply("couldnt delete that bad boi");
                       }
                       self.db.collection('events').deleteOne({_id: res[res.length - 1]._id}, (err, res) => {
-                        if (!err) self.showCalendar();
+                        if (!err) {
+                          self.showCalendar();
+                          msg.reply("Deleted that bad boi");
+                        }
                       });
-                      msg.reply("Deleted that bad boi");
                     });
                 } else {
                     let days = this.daysToWeekday(args[0]);
@@ -385,7 +384,8 @@ module.exports = {
                           }
                           self.db.collection('events').deleteOne({_id: event._id}, (err, res) => {
                             if (err) {
-                              msg.reply('you are dead. not big soup rice')
+                              msg.reply('you are dead. not big soup rice');
+                              console.log(err);
                             }
                           });
                         }
@@ -412,9 +412,6 @@ module.exports = {
                 })
                 .catch(collected => msg.reply("Time's out mothafucka"));
         }
-        if (command === 'addmeme') {
-            msg.reply("Jesus Christ, I've added this masterpiece, but leave mspaint alone");
-        }
         if (command === 'help') {
           let str = '```Here\'s a list of commands:\n';
           str += `!add dd/mm hh:mm "title" "description" -subject\n`;
@@ -423,8 +420,7 @@ module.exports = {
           str += `!info <index> - show info about a certain event\n`;
           str += `!remove <index> - remove a certain event\n`;
           str += `!clear - remove all events\n`;
-          str += `!help - idk\n`
-          str += '!addmeme - Ada?```';
+          str += '!help - idk```';
           msg.channel.send(str);
         }
       }
@@ -457,8 +453,5 @@ module.exports = {
 // !addmeme "http://url.jpg" -KCK
 
 // TODO:
-// - notifications
-// - memsy (url.jpg)
-// - baza subjectsów
-// - add -me ?
-// - usuwanie przestarzalych / archiwum
+// thumbnails
+// avatars
