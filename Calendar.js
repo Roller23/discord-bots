@@ -123,7 +123,7 @@ module.exports = {
           let today = new Date();
           let minutesPassed = Math.floor((today.getTime() - event.date.getTime()) / 1000 / 60);
           let hoursPassed = Math.floor(minutesPassed / 60);
-          const shouldNotify = (hoursPassed === -25 && event.notifiedDayBefore) || (hoursPassed === -2 && event.notifiedHourBefore);
+          const shouldNotify = (hoursPassed === -25 && !event.notifiedDayBefore) || (hoursPassed === -2 && !event.notifiedHourBefore);
           if (!shouldNotify) continue;
           event.notifiedDayBefore = hoursPassed === -25;
           event.notifiedHourBefore = hoursPassed === -2;
