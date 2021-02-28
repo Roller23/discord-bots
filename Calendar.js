@@ -123,12 +123,10 @@ module.exports = {
           let today = new Date();
           let minutesPassed = Math.floor((today.getTime() - event.date.getTime()) / 1000 / 60);
           let hoursPassed = Math.floor(minutesPassed / 60);
-          console.log(event.name, minutesPassed, hoursPassed);
-          const shouldNotify = hoursPassed === 23 || hoursPassed === 0;
+          const shouldNotify = hoursPassed === -25 || hoursPassed === -2;
           if (!shouldNotify) continue;
-          console.log('should notify');
-          event.notifiedDayBefore = hoursPassed === 23;
-          event.notifiedHourBefore = hoursPassed === 0;
+          event.notifiedDayBefore = hoursPassed === -25;
+          event.notifiedHourBefore = hoursPassed === -2;
           let guild = await self.getGuild(self.slaves[i]);
           let channel = guild.channels.cache.get(self.channelID);
           channel.send(`wakey wakey`);
