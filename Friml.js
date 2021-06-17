@@ -28,8 +28,8 @@ module.exports = {
         });
       
         socket.on('queued', data => {
-          position = data.position;
-          avgTime = data.time;
+          const position = data.position;
+          const avgTime = data.time;
           msg.reply(`you're ${position} in queue!`);
         });
       
