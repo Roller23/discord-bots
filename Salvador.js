@@ -17,7 +17,7 @@ module.exports = {
       const now = Date.now();
       const wakeDiff = now - this.lastHermesPing;
       const diffHours = wakeDiff / 1000 / 60 / 60;
-      if (diffHours >= 1) {
+      if (diffHours >= 0) {
         this.lastHermesPing = now;
         await fetch(this.hermesWakeEndpoint, {
           method: 'POST',
